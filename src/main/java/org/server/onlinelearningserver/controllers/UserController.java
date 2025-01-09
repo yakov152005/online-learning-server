@@ -1,11 +1,13 @@
 package org.server.onlinelearningserver.controllers;
 
+import org.server.onlinelearningserver.entitys.User;
 import org.server.onlinelearningserver.responses.BasicResponse;
+import org.server.onlinelearningserver.responses.LoginResponse;
 import org.server.onlinelearningserver.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 import static org.server.onlinelearningserver.utils.Constants.UrlClient.URL_SERVER;
 
@@ -20,12 +22,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/hello-from-server")
-    public BasicResponse helloFromServer(){
-        return new BasicResponse(true,"Hello from server!");
+    @PostMapping("/add-user")
+    public BasicResponse addUser(@RequestBody User user){
+        return userService.addUser(user);
     }
 
-
+    @PostMapping("/login-user")
+    public LoginResponse loginUser(@RequestBody Map<String,String> loginDetails){
+        return userService.loginUser(loginDetails);
+    }
 
 
 }
