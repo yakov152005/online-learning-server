@@ -15,6 +15,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     User findUserByEmail(@Param("email") String email);
 
     @Query("SELECT u FROM User u WHERE u NOT IN " +
-           "(SELECT l.user FROM Login l WHERE l.date >= :lastWeek)")
+           "(SELECT s.user FROM Session s WHERE s.lastActivity >= :lastWeek)")
     List<User> findUsersNotLoggedInLastWeek(@Param("lastWeek") Date lastWeek);
 }

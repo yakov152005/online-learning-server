@@ -1,6 +1,7 @@
 package org.server.onlinelearningserver.jobs;
 
 import org.server.onlinelearningserver.entitys.User;
+import org.server.onlinelearningserver.repositoris.SessionRepository;
 import org.server.onlinelearningserver.repositoris.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,13 +20,14 @@ import static org.server.onlinelearningserver.utils.Constants.Mail.TITLE;
 public class InactiveUsersJob {
     private final UserRepository userRepository;
 
+
     @Autowired
-    public InactiveUsersJob(UserRepository userRepository){
+    public InactiveUsersJob(UserRepository userRepository,SessionRepository sessionRepository){
         this.userRepository = userRepository;
     }
 
 
-    @Scheduled(cron = "0 55 22 * * *")
+    @Scheduled(cron = "0 20 23 * * *")
     public void sendMailToNotLoggedUsers(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -7);

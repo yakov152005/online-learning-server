@@ -10,6 +10,7 @@ import java.util.Date;
 public class JwtUtils {
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     public static final int TWO_HOUR =  (3600 * 1000 ) * 2;
+    public static final int FIVE_MINUTE = (5 * 60 * 1000);
 
     public static String generateToken(String username) {
         return Jwts.builder()
@@ -37,7 +38,7 @@ public class JwtUtils {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            System.out.println("Token is not valid. because you restart the springboot and token is removed. " +
+            System.out.println("Token is not valid. because you restart the springboot OR expiration date and token is removed. " +
                                "login again!");
             return false;
         }

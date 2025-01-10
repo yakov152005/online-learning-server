@@ -8,9 +8,9 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "LOGIN")
+@Table(name = "SESSION")
 @Data
-public class Login {
+public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -19,7 +19,7 @@ public class Login {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private Date date;
+    @Column(nullable = false, updatable = true)
+    private Date lastActivity;
+
 }
