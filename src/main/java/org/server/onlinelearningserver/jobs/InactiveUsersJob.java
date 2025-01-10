@@ -30,8 +30,8 @@ public class InactiveUsersJob {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -7);
         Date lastWeek = calendar.getTime();
-        Date temp = new Date();
-        List<User> loginActivityList = userRepository.findUsersNotLoggedInLastWeek(temp);
+       // Date temp = new Date();
+        List<User> loginActivityList = userRepository.findUsersNotLoggedInLastWeek(lastWeek);
         if (loginActivityList != null){
             List<String> emails = loginActivityList.stream().map(User::getEmail).toList();
             for (String email : emails){
