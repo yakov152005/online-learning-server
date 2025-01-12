@@ -3,6 +3,8 @@ package org.server.onlinelearningserver.entitys;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table(name = "USER")
 @Data
@@ -23,4 +25,9 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Progress progress;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<QuestionHistory> questionHistories;
 }

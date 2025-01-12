@@ -16,9 +16,12 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
-    public TokenResponse validateToken(String token) {
-        boolean isValid = JwtUtils.isTokenValid(token);
-        return new TokenResponse(isValid, isValid ? "Token is valid" : "Token is invalid", isValid);
+    public TokenResponse validateToken(String cleanToken) {
+        boolean isValid = JwtUtils.isTokenValid(cleanToken);
+        String username = JwtUtils.extractUsername(cleanToken);
+
+
+        return new TokenResponse(isValid, isValid ? "Token is valid" : "Token is invalid", isValid,username);
     }
 
 }

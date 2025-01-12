@@ -24,7 +24,7 @@ public class SessionController {
     public ResponseEntity<TokenResponse> validateToken(@RequestHeader("Authorization") String token) {
         if (token == null || token.isEmpty()) {
             System.out.println("Token missing");
-            return ResponseEntity.badRequest().body(new TokenResponse(false, "Token is missing", false));
+            return ResponseEntity.badRequest().body(new TokenResponse(false, "Token is missing", false,null));
         }
 
         String cleanToken = token.replace("Bearer ", "");
