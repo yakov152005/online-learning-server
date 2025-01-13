@@ -11,6 +11,10 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "progress_id", nullable = false)
+    private Progress progress;
+
     @Column(nullable = false)
     private String category;
 
@@ -24,6 +28,10 @@ public class Question {
     private String solution;
 
     private String explanation;
+
+    @Column(nullable = false)
+    private boolean answered = false;
+
 
     /*
     @ManyToOne

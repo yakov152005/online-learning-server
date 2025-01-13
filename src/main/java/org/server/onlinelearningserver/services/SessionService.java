@@ -18,8 +18,10 @@ public class SessionService {
 
     public TokenResponse validateToken(String cleanToken) {
         boolean isValid = JwtUtils.isTokenValid(cleanToken);
-        String username = JwtUtils.extractUsername(cleanToken);
-
+        String username = "";
+        if (isValid){
+            username = JwtUtils.extractUsername(cleanToken);
+        }
 
         return new TokenResponse(isValid, isValid ? "Token is valid" : "Token is invalid", isValid,username);
     }

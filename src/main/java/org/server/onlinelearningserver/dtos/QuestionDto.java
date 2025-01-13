@@ -20,4 +20,11 @@ public class QuestionDto {
         this.solution = solution;
         this.explanation = explanation;
     }
+
+    public QuestionDto(long id,String category, String content, int difficulty) {
+        this.id = id;
+        this.category = category;
+        this.content = content;
+        this.difficulty = difficulty;
+    }
 }

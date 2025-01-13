@@ -26,4 +26,7 @@ public class QuestionHistory {
 
     @Column(nullable = false)
     private Date answeredAt;
+
+
+
 }

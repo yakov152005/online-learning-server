@@ -1,6 +1,8 @@
 package org.server.onlinelearningserver.controllers;
 
+import org.server.onlinelearningserver.entitys.User;
 import org.server.onlinelearningserver.responses.BasicResponse;
+import org.server.onlinelearningserver.responses.DashboardResponse;
 import org.server.onlinelearningserver.responses.QuestionResponse;
 import org.server.onlinelearningserver.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,11 @@ public class QuestionController {
                                       @RequestParam String userAnswer,
                                       @RequestParam String username){
         return questionService.submitAnswer(questionId,userAnswer,username);
+    }
+
+    @GetMapping("/get-dashboard-user")
+    private DashboardResponse getDashboardDetails(@RequestParam String username){
+       return questionService.getDashboard(username);
     }
 
 }

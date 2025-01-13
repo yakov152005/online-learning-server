@@ -3,7 +3,9 @@ package org.server.onlinelearningserver.entitys;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -17,6 +19,9 @@ public class Progress {
     @OneToOne()
     @JoinColumn(name = "user_id" , nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "progress", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Question> questions = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "category_success_streak", joinColumns = @JoinColumn(name = "progress_id"))

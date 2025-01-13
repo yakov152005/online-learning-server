@@ -1,6 +1,9 @@
 package org.server.onlinelearningserver.services;
 
+import org.server.onlinelearningserver.dtos.CategoryProgressDto;
+import org.server.onlinelearningserver.dtos.CategorySuccessStreakDto;
 import org.server.onlinelearningserver.dtos.QuestionDto;
+import org.server.onlinelearningserver.dtos.WeakPointDto;
 import org.server.onlinelearningserver.entitys.Progress;
 import org.server.onlinelearningserver.entitys.Question;
 import org.server.onlinelearningserver.entitys.QuestionHistory;
@@ -10,12 +13,15 @@ import org.server.onlinelearningserver.repositoris.QuestionHistoryRepository;
 import org.server.onlinelearningserver.repositoris.QuestionRepository;
 import org.server.onlinelearningserver.repositoris.UserRepository;
 import org.server.onlinelearningserver.responses.BasicResponse;
+import org.server.onlinelearningserver.responses.DashboardResponse;
 import org.server.onlinelearningserver.responses.QuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -68,12 +74,15 @@ public class QuestionService {
         String activeCategory = progress.getActiveCategory();
         int difficulty = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
 
+       /*
         double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
         if (Math.random() < weaknessFactor) {
             difficulty = Math.max(difficulty - 1, 1);
         }
+        */
 
         Question question = questionGenerator.generateQuestion(activeCategory, difficulty);
+        question.setProgress(progress);
         questionRepository.save(question);
 
         QuestionDto questionDto = new QuestionDto(
@@ -101,6 +110,7 @@ public class QuestionService {
             return new BasicResponse(false,"Question not found.");
         }
 
+        question.setAnswered(true);
         boolean isCorrect = question.getSolution().equals(userAnswer);
 
         saveQuestionHistory(user,question,isCorrect);
@@ -133,19 +143,20 @@ public class QuestionService {
             weakPoints.put(activeCategory, weakPoints.getOrDefault(activeCategory, 0) + 1);
             progress.setWeakPoints(weakPoints);
 
-            /*
-            double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
-            if (Math.random() < weaknessFactor) {
-                difficulty = Math.max(difficulty - 1, 1);
-            }
-             */
 
-
-            if (currentLevel > 1) {
-                progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
+            int weaknessPoint = progress.getWeakPoints().get(activeCategory);
+            if (weaknessPoint > 5) {
+                double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
+                if (Math.random() < weaknessFactor) {
+                    System.out.println(Math.random() + " " + weaknessFactor);
+                    if (currentLevel > 1) {
+                        progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
+                        weakPoints.put(activeCategory, 0);
+                        progress.setWeakPoints(weakPoints);
+                    }
+                }
             }
         }
-
 
         progress.getCategorySuccessStreak().put(activeCategory, successStreak);
 
@@ -161,42 +172,70 @@ public class QuestionService {
         history.setAnsweredAt(new Date());
         questionHistoryRepository.save(history);
     }
-}
 
-/*
-
-    public void updateProgress(User user, boolean isCorrect, String activeCategory) {
-        Progress progress = progressRepository.findByUser(user);
-        if (progress == null) {
-            throw new IllegalStateException("Progress not found for user: " + user.getUsername());
-        }
-
-        int currentLevel = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
-        int successStreak = progress.getCategorySuccessStreak().getOrDefault(activeCategory, 0);
-
-        if (isCorrect) {
-            successStreak++;
-            if (successStreak >= 10) {
-                progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
-                successStreak = 0; // איפוס הסטרייק לאחר העלאת הרמה
-            }
-        } else {
-            successStreak = 0;
-
-            // עדכון נקודות חולשה
-            Map<String, Integer> weakPoints = progress.getWeakPoints();
-            weakPoints.put(activeCategory, weakPoints.getOrDefault(activeCategory, 0) + 1);
-            progress.setWeakPoints(weakPoints);
-
-            // הורדת רמה
-            if (currentLevel > 1) {
-                progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
-            }
-        }
-
-        // עדכון הסטרייק עבור הקטגוריה
-        progress.getCategorySuccessStreak().put(activeCategory, successStreak);
-
-        progressRepository.save(progress);
+    public List<QuestionDto> getUnansweredQuestions(User user) {
+        List<Question> unansweredQuestions = questionRepository.findByProgress_UserAndAnsweredFalse(user);
+        return unansweredQuestions.stream()
+                .map(q -> new QuestionDto(q.getId(),q.getCategory(), q.getContent(), q.getDifficulty()))
+                .toList();
     }
- */
+
+    public DashboardResponse getDashboard(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null){
+            return new DashboardResponse(false,"User not found.");
+        }
+
+        List<QuestionDto> openQuestions = getUnansweredQuestions(user);
+
+        List<WeakPointDto> weakPoints = progressRepository.findWeakPointsByUser(user);
+
+        List<CategorySuccessStreakDto> successStreaks = progressRepository.findSuccessStreakByUser(user);
+
+        List<CategoryProgressDto> currentLevels = progressRepository.findCategoryProgressByUser(user);
+
+
+        Map<String, Integer> correctAnswersPerCategory = new HashMap<>();
+        Map<String, Integer> incorrectAnswersPerCategory = new HashMap<>();
+        List<QuestionHistory> history = questionHistoryRepository.findByUser(user);
+
+        int totalCorrect = 0;
+        int totalIncorrect = 0;
+
+        for (QuestionHistory qh : history) {
+            String category = qh.getQuestion().getCategory();
+            if (qh.isCorrect()) {
+                correctAnswersPerCategory.put(category, correctAnswersPerCategory.getOrDefault(category, 0) + 1);
+                totalCorrect++;
+            } else {
+                incorrectAnswersPerCategory.put(category, incorrectAnswersPerCategory.getOrDefault(category, 0) + 1);
+                totalIncorrect++;
+            }
+        }
+
+
+        Map<String, Double> successRates = new HashMap<>();
+        for (String category : correctAnswersPerCategory.keySet()) {
+            int correct = correctAnswersPerCategory.getOrDefault(category, 0);
+            int incorrect = incorrectAnswersPerCategory.getOrDefault(category, 0);
+            int total = correct + incorrect;
+
+            successRates.put(category, total == 0 ? 0 : (correct / (double) total) * 100);
+        }
+
+        return new DashboardResponse(true,
+                "All details send."
+                ,successStreaks,
+                openQuestions,
+                weakPoints,
+                currentLevels,
+                correctAnswersPerCategory,
+                incorrectAnswersPerCategory,
+                successRates,
+                totalCorrect,
+                totalIncorrect
+        );
+    }
+
+
+}
