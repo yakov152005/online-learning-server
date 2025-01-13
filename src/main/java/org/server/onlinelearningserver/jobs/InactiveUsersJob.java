@@ -27,13 +27,13 @@ public class InactiveUsersJob {
     }
 
 
-    @Scheduled(cron = "0 20 23 * * *")
+    @Scheduled(cron = "0 43 23 * * *")
     public void sendMailToNotLoggedUsers(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -7);
         Date lastWeek = calendar.getTime();
-       // Date temp = new Date();
-        List<User> loginActivityList = userRepository.findUsersNotLoggedInLastWeek(lastWeek);
+        Date temp = new Date();
+        List<User> loginActivityList = userRepository.findUsersNotLoggedInLastWeek(temp);
         if (loginActivityList != null){
             List<String> emails = loginActivityList.stream().map(User::getEmail).toList();
             for (String email : emails){

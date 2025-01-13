@@ -23,17 +23,20 @@ public class Question {
     @Column(nullable = false)
     private String solution;
 
+    private String explanation;
+
     /*
     @ManyToOne
     @JoinColumn(name = "subtopic_id", nullable = false)
     private Subtopic subtopic;
     */
 
-    public Question(String category, String content, int difficulty, String solution) {
+    public Question(String category, String content, int difficulty, String solution, String explanation) {
         this.category = category;
         this.content = content;
         this.difficulty = difficulty;
         this.solution = solution;
+        this.explanation = explanation;
     }
 
     public Question() {

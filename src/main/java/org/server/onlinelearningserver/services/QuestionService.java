@@ -68,6 +68,11 @@ public class QuestionService {
         String activeCategory = progress.getActiveCategory();
         int difficulty = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
 
+        double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
+        if (Math.random() < weaknessFactor) {
+            difficulty = Math.max(difficulty - 1, 1);
+        }
+
         Question question = questionGenerator.generateQuestion(activeCategory, difficulty);
         questionRepository.save(question);
 
@@ -76,7 +81,8 @@ public class QuestionService {
                 question.getCategory(),
                 question.getContent(),
                 question.getDifficulty(),
-                question.getSolution()
+                question.getSolution(),
+                question.getExplanation()
         );
 
         return new QuestionResponse(true, "Question sent successfully.", questionDto);
@@ -117,6 +123,61 @@ public class QuestionService {
             successStreak++;
             if (successStreak >= 10) {
                 progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
+                successStreak = 0;
+            }
+        } else {
+            successStreak = 0;
+
+
+            Map<String, Integer> weakPoints = progress.getWeakPoints();
+            weakPoints.put(activeCategory, weakPoints.getOrDefault(activeCategory, 0) + 1);
+            progress.setWeakPoints(weakPoints);
+
+            /*
+            double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
+            if (Math.random() < weaknessFactor) {
+                difficulty = Math.max(difficulty - 1, 1);
+            }
+             */
+
+
+            if (currentLevel > 1) {
+                progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
+            }
+        }
+
+
+        progress.getCategorySuccessStreak().put(activeCategory, successStreak);
+
+        progressRepository.save(progress);
+    }
+
+
+    public void saveQuestionHistory(User user, Question question, boolean isCorrect) {
+        QuestionHistory history = new QuestionHistory();
+        history.setUser(user);
+        history.setQuestion(question);
+        history.setCorrect(isCorrect);
+        history.setAnsweredAt(new Date());
+        questionHistoryRepository.save(history);
+    }
+}
+
+/*
+
+    public void updateProgress(User user, boolean isCorrect, String activeCategory) {
+        Progress progress = progressRepository.findByUser(user);
+        if (progress == null) {
+            throw new IllegalStateException("Progress not found for user: " + user.getUsername());
+        }
+
+        int currentLevel = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
+        int successStreak = progress.getCategorySuccessStreak().getOrDefault(activeCategory, 0);
+
+        if (isCorrect) {
+            successStreak++;
+            if (successStreak >= 10) {
+                progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
                 successStreak = 0; // איפוס הסטרייק לאחר העלאת הרמה
             }
         } else {
@@ -138,14 +199,4 @@ public class QuestionService {
 
         progressRepository.save(progress);
     }
-
-
-    public void saveQuestionHistory(User user, Question question, boolean isCorrect) {
-        QuestionHistory history = new QuestionHistory();
-        history.setUser(user);
-        history.setQuestion(question);
-        history.setCorrect(isCorrect);
-        history.setAnsweredAt(new Date());
-        questionHistoryRepository.save(history);
-    }
-}
+ */
