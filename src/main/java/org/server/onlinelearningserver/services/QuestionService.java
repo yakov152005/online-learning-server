@@ -12,9 +12,9 @@ import org.server.onlinelearningserver.repositoris.ProgressRepository;
 import org.server.onlinelearningserver.repositoris.QuestionHistoryRepository;
 import org.server.onlinelearningserver.repositoris.QuestionRepository;
 import org.server.onlinelearningserver.repositoris.UserRepository;
-import org.server.onlinelearningserver.responses.BasicResponse;
 import org.server.onlinelearningserver.responses.DashboardResponse;
 import org.server.onlinelearningserver.responses.QuestionResponse;
+import org.server.onlinelearningserver.responses.SubmitResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.server.onlinelearningserver.utils.Constants.Question.*;
 
 @Service
 public class QuestionService {
@@ -99,28 +101,30 @@ public class QuestionService {
 
 
 
-    public BasicResponse submitAnswer(long questionId, String userAnswer, String username){
+    public SubmitResponse submitAnswer(long questionId, String userAnswer, String username){
         User user = userRepository.findByUsername(username);
         if (user == null){
-            return new BasicResponse(false,"User not found.");
+            return new SubmitResponse(false,"User not found.",false);
         }
 
         Question question = questionRepository.findById(questionId).orElse(null);
         if (question == null){
-            return new BasicResponse(false,"Question not found.");
+            return new SubmitResponse(false,"Question not found.",false);
         }
 
         question.setAnswered(true);
         boolean isCorrect = question.getSolution().equals(userAnswer);
 
         saveQuestionHistory(user,question,isCorrect);
-        updateProgress(user,isCorrect,question.getCategory());
+        boolean isLevelUp = updateProgress(user,isCorrect,question.getCategory());
 
-        return new BasicResponse(isCorrect, isCorrect ? "Correct answer!" : "Wrong answer." );
+        return new SubmitResponse(isCorrect, isCorrect ? "Correct answer!" : "Wrong answer.", isLevelUp);
     }
 
 
-    public void updateProgress(User user, boolean isCorrect, String activeCategory) {
+
+    public boolean updateProgress(User user, boolean isCorrect, String activeCategory) {
+        boolean isLevelUp = false;
         Progress progress = progressRepository.findByUser(user);
         if (progress == null) {
             throw new IllegalStateException("Progress not found for user: " + user.getUsername());
@@ -131,12 +135,13 @@ public class QuestionService {
 
         if (isCorrect) {
             successStreak++;
-            if (successStreak >= 10) {
+            if (successStreak >= FOR_LEVEL_UP) {
                 progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
-                successStreak = 0;
+                isLevelUp = true;
+                successStreak = RESET_AFTER_LEVEL_UP;
             }
         } else {
-            successStreak = 0;
+            successStreak = RESET_AFTER_ERROR_ANSWER;
 
 
             Map<String, Integer> weakPoints = progress.getWeakPoints();
@@ -145,10 +150,10 @@ public class QuestionService {
 
 
             int weaknessPoint = progress.getWeakPoints().get(activeCategory);
-            if (weaknessPoint > 5) {
+            if (weaknessPoint > ERROR_HIGH_THEN_FIVE) {
                 double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
                 if (Math.random() < weaknessFactor) {
-                    if (currentLevel > 1) {
+                    if (currentLevel > LEVEL_HIGH_THEN_ONE) {
                         progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
                         weakPoints.put(activeCategory, 0);
                         progress.setWeakPoints(weakPoints);
@@ -160,6 +165,8 @@ public class QuestionService {
         progress.getCategorySuccessStreak().put(activeCategory, successStreak);
 
         progressRepository.save(progress);
+
+        return isLevelUp;
     }
 
 

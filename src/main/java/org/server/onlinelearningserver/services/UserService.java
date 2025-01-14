@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.server.onlinelearningserver.utils.GeneratorUtils.*;
-import static org.server.onlinelearningserver.utils.HelpMethods.checkAllFiled;
+import static org.server.onlinelearningserver.services.HelpMethods.checkAllFiled;
 
 @Service
 public class UserService {

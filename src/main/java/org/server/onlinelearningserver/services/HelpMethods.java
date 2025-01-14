@@ -1,4 +1,4 @@
-package org.server.onlinelearningserver.utils;
+package org.server.onlinelearningserver.services;
 
 import org.server.onlinelearningserver.entitys.User;
 import org.server.onlinelearningserver.repositoris.UserRepository;
