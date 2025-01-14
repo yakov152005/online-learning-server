@@ -22,8 +22,14 @@ public class DashboardResponse extends BasicResponse {
     Map<String, Double> successRate;
     private int totalCorrectAnswers;
     private int totalIncorrectAnswers;
+    private int totalUnansweredQuestion;
+    private double totalSuccessRate;
 
-    public DashboardResponse(boolean success, String error, List<CategorySuccessStreakDto> successStreak, List<QuestionDto> openQuestions, List<WeakPointDto> weakPoints, List<CategoryProgressDto> currentLevels, Map<String, Integer> correctAnswersPerCategory, Map<String, Integer> incorrectAnswersPerCategory, Map<String, Double> successRate, int totalCorrectAnswers, int totalIncorrectAnswers) {
+    public DashboardResponse(boolean success, String error, List<CategorySuccessStreakDto> successStreak,
+                             List<QuestionDto> openQuestions, List<WeakPointDto> weakPoints,
+                             List<CategoryProgressDto> currentLevels, Map<String, Integer> correctAnswersPerCategory,
+                             Map<String, Integer> incorrectAnswersPerCategory, Map<String, Double> successRate,
+                             int totalCorrectAnswers, int totalIncorrectAnswers,int totalUnansweredQuestion,double totalSuccessRate) {
         super(success, error);
         this.successStreak = successStreak;
         this.openQuestions = openQuestions;
@@ -34,6 +40,8 @@ public class DashboardResponse extends BasicResponse {
         this.successRate = successRate;
         this.totalCorrectAnswers = totalCorrectAnswers;
         this.totalIncorrectAnswers = totalIncorrectAnswers;
+        this.totalUnansweredQuestion = totalUnansweredQuestion;
+        this.totalSuccessRate = totalSuccessRate;
     }
 
     public DashboardResponse(boolean success, String error) {

@@ -69,7 +69,7 @@ public class QuestionGenerator {
             case LEVEL_TWO:
                 content = a + " - " + b + " = ?";
                 solution = calculateResult(a,b,"-");
-                explanation = "To solve this, simply subtract " + a + "less" + b + ".";
+                explanation = "To solve this, simply subtract " + a + " less " + b + ".";
                 break;
             case LEVEL_THREE:
             case LEVEL_FOUR:
@@ -123,7 +123,7 @@ public class QuestionGenerator {
                 }
                 if (difficulty == LEVEL_TWO){
                     a = (random.nextInt(1,10) ) * difficulty;
-                    b = a * ((int) (Math.random() * Math.pow(10, difficulty)));
+                    b = a * ((int) (Math.random() * Math.pow(4, difficulty)));
                 }
 
                 content = b + " / " + a + " = ?";
@@ -144,7 +144,7 @@ public class QuestionGenerator {
                 a = b * result;
                 content = "x / " + b + " = " + result;
                 solution = String.valueOf(a);
-                explanation = "To find x, multiply " + result + " by " + a + ".";
+                explanation = "To find x, multiply " + result + " by " + b + ".";
 
                 break;
             default:

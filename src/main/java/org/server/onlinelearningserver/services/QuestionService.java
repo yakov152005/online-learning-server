@@ -148,7 +148,6 @@ public class QuestionService {
             if (weaknessPoint > 5) {
                 double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
                 if (Math.random() < weaknessFactor) {
-                    System.out.println(Math.random() + " " + weaknessFactor);
                     if (currentLevel > 1) {
                         progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
                         weakPoints.put(activeCategory, 0);
@@ -223,6 +222,11 @@ public class QuestionService {
             successRates.put(category, total == 0 ? 0 : (correct / (double) total) * 100);
         }
 
+        int totalUnanswered = openQuestions.size();
+
+        int totalAnswers = totalCorrect + totalIncorrect;
+        double totalSuccessRate =  ( (totalCorrect / (double) totalAnswers) * 100);
+
         return new DashboardResponse(true,
                 "All details send."
                 ,successStreaks,
@@ -233,7 +237,9 @@ public class QuestionService {
                 incorrectAnswersPerCategory,
                 successRates,
                 totalCorrect,
-                totalIncorrect
+                totalIncorrect,
+                totalUnanswered,
+                totalSuccessRate
         );
     }
 
