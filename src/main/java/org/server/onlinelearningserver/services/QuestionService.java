@@ -15,6 +15,7 @@ import org.server.onlinelearningserver.repositoris.UserRepository;
 import org.server.onlinelearningserver.responses.DashboardResponse;
 import org.server.onlinelearningserver.responses.QuestionResponse;
 import org.server.onlinelearningserver.responses.SubmitResponse;
+import org.server.onlinelearningserver.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -186,11 +187,32 @@ public class QuestionService {
                 .toList();
     }
 
-    public DashboardResponse getDashboard(String username) {
+    public DashboardResponse getDashboard(String token,String username) {
         User user = userRepository.findByUsername(username);
+
+        if (token == null){
+            return new DashboardResponse(false,"token is missing");
+        }
         if (user == null){
             return new DashboardResponse(false,"User not found.");
         }
+
+        String cleanToken = token.replace("Bearer ", "");
+        boolean isValid = JwtUtils.isTokenValid(cleanToken);
+        String findUsernameByToken = "";
+
+        if (isValid){
+            findUsernameByToken = JwtUtils.extractUsername(cleanToken);
+        }else {
+            return new DashboardResponse(false,"User name not founded");
+        }
+
+        User findUserByToken = userRepository.findByUsername(findUsernameByToken);
+
+        if (user != findUserByToken){
+            return new DashboardResponse(false,"Token not match to this account please login again");
+        }
+
 
         List<QuestionDto> openQuestions = getUnansweredQuestions(user);
 

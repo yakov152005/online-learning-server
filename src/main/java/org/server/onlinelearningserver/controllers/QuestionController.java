@@ -35,8 +35,8 @@ public class QuestionController {
     }
 
     @GetMapping("/get-dashboard-user")
-    private DashboardResponse getDashboardDetails(@RequestParam String username){
-       return questionService.getDashboard(username);
+    private DashboardResponse getDashboardDetails(@RequestHeader("Authorization") String token,@RequestParam String username){
+       return questionService.getDashboard(token,username);
     }
 
 }

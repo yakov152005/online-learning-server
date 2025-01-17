@@ -65,6 +65,7 @@ public class Constants {
         public static final String MULTI = "multiplication";
         public static final String DIV = "division";
         public static final String WORD_PROBLEM = "wordProblem";
+        public static final String INVOICE_SERIES =  "invoiceSeries";
 
         public static final List<String> hebrewBoysNames = List.of("אורי", "יובל", "איתי", "נועם", "תומר");
         public static final List<String> hebrewGirlsNames = List.of("עדי", "נועה", "ליאן", "שילת", "קארין");
