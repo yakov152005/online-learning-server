@@ -24,10 +24,51 @@ public class QuestionGenerator {
             case WORD_PROBLEM -> generateWordProblem(difficulty);
             case INVOICE_SERIES -> generateInvoiceSeries(difficulty);
             case QUADRATIC_EQUATION -> generateQuadraticEquation(difficulty);
+            case EQUATION_LINE -> generateEquationOfTheLine(difficulty);
             //case "fractions" -> generateFractionQuestion(difficulty);
             default -> throw new IllegalArgumentException("Unknown question type: " + category);
         };
     }
+
+    private static Question generateEquationOfTheLine(int difficulty) {
+        int x1, y1, x2, y2, m;
+        do {
+            x1 = generateRandomNumber(difficulty);
+            y1 = generateRandomNumber(difficulty);
+            x2 = generateRandomNumber(difficulty);
+            y2 = generateRandomNumber(difficulty);
+        } while (x1 == x2 || (y2 - y1) % (x2 - x1) != 0);
+
+        m = (y2 - y1) / (x2 - x1);
+        int b = y1 - (m * x1);
+        String result = "y=" + m + "x" + (b >= 0 ? "+" + b : "-" + Math.abs(b));
+
+        String content, solution, explanation;
+        switch (difficulty) {
+            case LEVEL_ONE:
+                content = "x₁,y₁ = (" + x1 + "," + y1 + "),  x₂,y₂ = (" + x2 + "," + y2 + ")  *m = ?";
+                solution = String.valueOf(m);
+                explanation = "✦ To solve this *✦ Use the formula " + findMFormula;
+                break;
+            case LEVEL_TWO:
+                content = "x₁,y₁ = (" + x1 + "," + y1 + "),  m = " + m + " *✦ Find the y=mx+b" +
+                          " *✦ Please write the full equation y=mx+b";
+                solution = result;
+                explanation = "✦ To solve this *use the formula " + equationLineFormula;
+                break;
+            case LEVEL_THREE:
+            default:
+                content = "x₁,y₁ = (" + x1 + "," + y1 + "), x₂,y₂ = (" + x2 + "," + y2 + ") *Find the y=mx+b" +
+                          " *✦ Please write the full equation y=mx+b";
+                solution = result;
+                explanation = "✦ To solve this *✦Find first the m with formula: " + findMFormula +
+                " *✦And for find equation line use the " + equationLineFormula;
+                break;
+        }
+
+        return new Question(EQUATION_LINE, content, difficulty, solution, explanation);
+    }
+
 
     private static Question generateQuadraticEquation(int difficulty){
         int x1 = generateRandomForQuadEquNumber(difficulty);
@@ -39,9 +80,10 @@ public class QuestionGenerator {
         switch (difficulty){
             case LEVEL_ONE:
             default:
-                content = "A = " + a + ", B = " + b + ", C = " + c + ", Find x1,2 and write down the largest x among them.";
+                content = "A = " + a + ", B = " + b + ", C = " + c + " *✦ Find X₁,₂ and write down the largest X among them.";
                 solution = String.valueOf(Math.max(x1, x2));
-                explanation = "To solve this, use the formula " +quadraticFormula;
+                explanation = "✦ To solve this *✦Use the formula: " +quadraticFormula;
+                break;
         }
         return new Question(QUADRATIC_EQUATION,content,difficulty,solution,explanation);
     }
@@ -51,40 +93,45 @@ public class QuestionGenerator {
         int d = generateRandomNumber(difficulty);
         int n = generateRandomNumberForN(difficulty);
         int an = a1 + ((n - 1) * d);
-        int Sn = (n * (a1 + an)) / 2;
+        int Sn = (n * (2*a1 + ((n-1) * d))) / 2;
         String content, solution, explanation;
         switch (difficulty) {
             case LEVEL_ONE:
-                content = "a1 = " + a1 + ", d = " + d + ", a" + n + " = ?";
+                content = "a1 = " + a1 + ", d = " + d + " *a" + n + " = ?";
                 solution = String.valueOf(an);
-                explanation = "To solve this, use the formula " + anFormula;
+                explanation = "✦ To solve this *✦ Use the formula " + anFormula;
                 break;
             case LEVEL_TWO:
-                content = " an = " + an + ", d = " + d + ", n = " + n + " a1 = ?";
+                content = " an = " + an + ", d = " + d + ", n = " + n + " *a1 = ?";
                 solution = String.valueOf(a1);
-                explanation = "To solve this, use the formula " + anFormula;
+                explanation = "✦ To solve this *✦ Use the formula " + anFormula;
                 break;
             case LEVEL_THREE:
                 int n2 = generateRandomNumberForN(difficulty);
                 int an2 = a1 + ((n2 - 1) * d);
 
-                content = "a" + n + " = " + an + ", a" + n2 + " = " + an2 + ", a1 = ? " + ", d = ?" +
-                          " *You should write the answer for a1 and not for d*";
+                content = "a" + n + " = " + an + ", a" + n2 + " = " + an2 + " *a1 = ? " + ", d = ?" +
+                          " *✦ You should write the answer for a1 and not for d";
                 solution = String.valueOf(a1);
-                explanation = "To solve this, [ a" + n + " = a1 + (" + n + " - 1) * d ]" + " - " +
-                              "[ a" + n2 + " = a1 + (" + n2 + " - 1) * d ]";
+                explanation = String.join("\n",
+                        "✦ To solve this, Place in the formulas: ",
+                        "*[a" + n + " = a1 + (" + n + " - 1) ✱ d]",
+                        "*➖",
+                        "*[a" + n2 + " = a1 + (" + n2 + " - 1) ✱ d]"
+                );
+
                 break;
             case LEVEL_FOUR:
-                content = " a1 = " + a1 + ", d = " + d + ", n = " + n + ", S" + n + " = ?";
+                content = " a1 = " + a1 + ", d = " + d + ", n = " + n + " *S" + n + " = ?";
                 solution = String.valueOf(Sn);
-                explanation = "To solve this, use the formula " + snFormula;
+                explanation = "✦ To solve this *✦ Use the formula: " + snFormula;
                 break;
             case LEVEL_FIVE:
             default:
-                content = " a1 = " + a1 + ", d = " + d + ", Sn" + " = " + Sn + ", n = ?" +
-                          " *Remember n cannot be a negative or decimal value.*";
+                content = " a1 = " + a1 + ", d = " + d + ", Sn" + " = " + Sn + " *n = ?" +
+                          " *✦ Remember n cannot be a negative or decimal value.";
                 solution = String.valueOf(n);
-                explanation = "Use the formulas " + snFormula + " And " + quadraticForInvoiceFormula;
+                explanation = "✦ Use the formulas: *" + snFormula + " *And *" + quadraticForInvoiceFormula;
                 break;
         }
         return new Question(INVOICE_SERIES, content, difficulty, solution, explanation);
@@ -93,34 +140,41 @@ public class QuestionGenerator {
     private static Question generateAdditionQuestion(int difficulty) {
         int a = generateRandomNumber(difficulty);
         int b = generateRandomNumber(difficulty);
-        int result = 0;
+        int result,x,num,num2 = 0;
         String content, solution, explanation;
 
         switch (difficulty) {
             case LEVEL_ONE:
             case LEVEL_TWO:
-                content = a + " + " + b + " = ?";
+                content = a + " ➕ " + b + " = ?";
                 solution = calculateResult(a, b, "+");
-                explanation = "To solve this, simply add " + a + " and " + b + ".";
+                explanation = "✦ To solve this *✦ Simply add " + a + " and " + b + ".";
                 break;
             case LEVEL_THREE:
-            case LEVEL_FOUR:
-            default:
-                if (difficulty == LEVEL_THREE) {
-                    result = a + generateRandomNumber(difficulty);
-                }
-                if (difficulty == LEVEL_FOUR) {
-                    a = generateRandomNumberPow(difficulty);
-                    result = a + generateRandomNumber(difficulty);
-                }
-                if (difficulty > LEVEL_FOUR){
-                    a = generateRandomNumberPow(difficulty);
-                    result = a + generateRandomNumber(difficulty);
-                }
-
-                content = a + " + " + "x" + " = " + result;
+                result = a + generateRandomNumber(difficulty);
+                content = a + " ➕ " + "X" + " = " + result + " *X = ?";
                 solution = calculateResult(result, a, "-");
-                explanation = "To find x, subtract " + a + " from " + result + ".";
+                explanation = "✦ To find X *✦ Subtract " + a + " from " + result + ".";
+                break;
+            case LEVEL_FOUR:
+                x = generateRandomNumber(2);
+                num = generateRandomNumber(2);
+                a = generateRandomNumber(2);
+                result = (num*x) + a;
+                content = num + "X ➕ " + a + " = " + result + " * X = ?";
+                solution = String.valueOf(x);
+                explanation = "✦ To find X *✦ Isolate the x on one side and the numbers on the other *then divide the result.";
+                break;
+            case LEVEL_FIVE:
+            default:
+                x = generateRandomNumber(2);
+                num = generateRandomNumber(2);
+                num2 = generateRandomNumber(3);
+                a = generateRandomNumber(2);
+                result = (num*x) + (num2*x) + a;
+                content = num + "X ➕ " + a + " ➕ " + num2 + "X = " + result + " * X = ?";
+                solution = String.valueOf(x);
+                explanation = "✦ To find X *✦ Isolate the x on one side and the numbers on the other *then divide the result.";
                 break;
         }
         return new Question(ADD, content, difficulty, solution, explanation);
@@ -133,9 +187,9 @@ public class QuestionGenerator {
         switch (difficulty) {
             case LEVEL_ONE:
             case LEVEL_TWO:
-                content = a + " - " + b + " = ?";
+                content = a + " ➖ " + b + " = ?";
                 solution = calculateResult(a, b, "-");
-                explanation = "To solve this, simply subtract " + a + " less " + b + ".";
+                explanation = "✦ To solve this, *✦ Simply subtract " + a + " less " + b + ".";
                 break;
             case LEVEL_THREE:
             case LEVEL_FOUR:
@@ -143,9 +197,9 @@ public class QuestionGenerator {
                 a = generateRandomNumberPow(difficulty);
                 int result = generateRandomNumberPow(difficulty);
                 b = a - result;
-                content = a + " - " + "x" + " = " + b;
+                content = a + " ➖ " + "X" + " = " + b + " *X = ?";
                 solution = String.valueOf(result);
-                explanation = "To find x, subtract " + a + " from " + b + ".";
+                explanation = "✦ To find X *✦ Subtract " + a + " from " + b + ".";
                 break;
         }
         return new Question(SUB, content, difficulty, solution, explanation);
@@ -157,17 +211,17 @@ public class QuestionGenerator {
         String content, solution, explanation;
         switch (difficulty) {
             case LEVEL_ONE:
-                content = a + " * " + b + " = ?";
+                content = a + " ✱ " + b + " = ?";
                 solution = String.valueOf(a * b);
-                explanation = "To solve this, simply multiply " + a + " and " + b + ".";
+                explanation = "✦ To solve this *✦ Simply multiply " + a + " and " + b + ".";
                 break;
             case LEVEL_TWO:
             default:
                 int result = a * generateRandomNumberPow(difficulty);
                 b = result / a;
-                content = a + " * " + "x" + " = " + result;
+                content = a + " ✱ " + "X" + " = " + result + " *X = ?";
                 solution = String.valueOf(b);
-                explanation = "To find x, divide " + result + " by " + a + ".";
+                explanation = "✦ To find X *✦ Divide " + result + " by " + a + ".";
                 break;
         }
 
@@ -190,9 +244,9 @@ public class QuestionGenerator {
                     b = a * ((int) (Math.random() * Math.pow(4, difficulty)));
                 }
 
-                content = b + " / " + a + " = ?";
+                content = b + " ➗ " + a + " = ?";
                 solution = String.valueOf(b / a);
-                explanation = "To solve this, simply division " + a + " by " + b + ".";
+                explanation = "✦ To solve this *✦ Simply division " + a + " by " + b + ".";
                 break;
             case LEVEL_THREE:
             case LEVEL_FOUR:
@@ -208,9 +262,9 @@ public class QuestionGenerator {
                 }
 
                 a = b * result;
-                content = "x / " + b + " = " + result;
+                content = "X ➗ " + b + " = " + result + " *X = ?";
                 solution = String.valueOf(a);
-                explanation = "To find x, multiply " + result + " by " + b + ".";
+                explanation = "✦ To find X *✦ Multiply " + result + " by " + b + ".";
                 break;
         }
 
@@ -231,7 +285,7 @@ public class QuestionGenerator {
 
                 result = a + b;
 
-                content = String.format("%s שם %d %s %s ולאחר מכן הוסיף עוד %d. כמה %s יש ל%s עכשיו?", boyName, a, item2, item1, b, item2, boyName);
+                content = String.format("%s שם %d %s %s ולאחר מכן הוסיף עוד %d. * כמה %s יש ל%s עכשיו?", boyName, a, item2, item1, b, item2, boyName);
                 solution = String.valueOf(result);
                 explanation = String.format("ת. %d ועוד %d הם %d.", a, b, result);
                 break;
@@ -242,7 +296,7 @@ public class QuestionGenerator {
                 a += b;
                 result = a - b;
 
-                content = String.format("%s קנתה %d %s, אך נתנה %d ל%s. כמה %s נשאר לה?", girlName, a, fruitName, b, boyName, fruitName);
+                content = String.format("%s קנתה %d %s, אך נתנה %d ל%s. *כמה %s נשאר לה?", girlName, a, fruitName, b, boyName, fruitName);
                 solution = String.valueOf(result);
                 explanation = String.format("ת. %d פחות %d הם %d", a, b, result);
                 break;
@@ -281,20 +335,12 @@ public class QuestionGenerator {
         };
     }
 
-    private String getOperatorDescription(String operator) {
-        return switch (operator) {
-            case "+" -> "add";
-            case "-" -> "subtract";
-            case "*" -> "multiply";
-            default -> throw new IllegalArgumentException("Unknown operator: " + operator);
-        };
-    }
 
     public static void main(String[] args) {
         int count = 5;
         boolean isValid = true;
         while (isValid) {
-            System.out.println(generateQuadraticEquation(1));
+            System.out.println(generateAdditionQuestion(54));
             count--;
             if (count == 0) {
                 isValid = false;

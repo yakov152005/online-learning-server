@@ -54,17 +54,18 @@ public class Constants {
         public static final int LEVEL_THREE = 3;
         public static final int LEVEL_FOUR = 4;
         public static final int LEVEL_FIVE = 5;
-        public static final int FOR_LEVEL_UP = 10;
+        public static final int FOR_LEVEL_UP = 1;
         public static final int RESET_AFTER_LEVEL_UP = 0;
         public static final int RESET_AFTER_ERROR_ANSWER = 0;
         public static final int ERROR_HIGH_THEN_FIVE = 5;
         public static final int LEVEL_HIGH_THEN_ONE = 1;
 
-        public static final String quadraticForInvoiceFormula = "n = (-b ± \u221A(b\u00B2 - 4ac)) / 2a";
+        public static final String quadraticForInvoiceFormula = "n = (-b ± √(b² - 4ac)) / 2a";
         public static final String anFormula = "an = a1 + (n -1) * d";
         public static final String snFormula = "Sn = n[2a1 + d(n-1)] / 2";
-
-        public static final String quadraticFormula = "x\u2081,\u2082 = (-b ± \u221A(b\u00B2 - 4ac)) / 2a";
+        public static final String quadraticFormula = "x₁,₂ = (-b ± √(b² - 4ac)) / 2a";
+        public static final String equationLineFormula = "y-y1=m(x-x1)";
+        public static final String findMFormula = "m = ((y₂ - y₁) / (x₂ - x₁))";
 
 
         public static final String ADD = "addition";
@@ -73,7 +74,8 @@ public class Constants {
         public static final String DIV = "division";
         public static final String WORD_PROBLEM = "wordProblem";
         public static final String INVOICE_SERIES =  "invoiceSeries";
-        public static final String  QUADRATIC_EQUATION = "quadraticEquation";
+        public static final String QUADRATIC_EQUATION = "quadraticEquation";
+        public static final String EQUATION_LINE = "equationOfTheLine";
 
         public static final List<String> hebrewBoysNames = List.of("אורי", "יובל", "איתי", "נועם", "תומר");
         public static final List<String> hebrewGirlsNames = List.of("עדי", "נועה", "ליאן", "שילת", "קארין");

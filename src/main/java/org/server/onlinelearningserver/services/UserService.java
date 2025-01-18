@@ -53,6 +53,11 @@ public class UserService {
         String email = loginDetails.get("email");
         String pass = loginDetails.get("password");
 
+        User user = userRepository.findUserByEmail(email);
+        if (user == null){
+            return new LoginResponse(false,"This Email is not exist, Please Sign Up.",null);
+        }
+
         if (email != null && pass != null) {
             User requestLogin = userRepository.findUserByEmail(email);
             if (requestLogin != null) {
