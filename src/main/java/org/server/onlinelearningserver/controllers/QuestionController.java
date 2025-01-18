@@ -1,7 +1,5 @@
 package org.server.onlinelearningserver.controllers;
 
-import org.server.onlinelearningserver.entitys.User;
-import org.server.onlinelearningserver.responses.BasicResponse;
 import org.server.onlinelearningserver.responses.DashboardResponse;
 import org.server.onlinelearningserver.responses.QuestionResponse;
 import org.server.onlinelearningserver.responses.SubmitResponse;

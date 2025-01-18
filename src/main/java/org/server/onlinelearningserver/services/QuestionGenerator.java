@@ -23,9 +23,27 @@ public class QuestionGenerator {
             case DIV -> generateDivisionQuestion(difficulty);
             case WORD_PROBLEM -> generateWordProblem(difficulty);
             case INVOICE_SERIES -> generateInvoiceSeries(difficulty);
+            case QUADRATIC_EQUATION -> generateQuadraticEquation(difficulty);
             //case "fractions" -> generateFractionQuestion(difficulty);
             default -> throw new IllegalArgumentException("Unknown question type: " + category);
         };
+    }
+
+    private static Question generateQuadraticEquation(int difficulty){
+        int x1 = generateRandomForQuadEquNumber(difficulty);
+        int x2 = generateRandomForQuadEquNumber(difficulty);
+        int a = generateRandomForQuadEquNumber(difficulty);
+        int b = -a * (x1 + x2);
+        int c = a * x1 * x2;
+        String content, solution, explanation;
+        switch (difficulty){
+            case LEVEL_ONE:
+            default:
+                content = "A = " + a + ", B = " + b + ", C = " + c + ", Find x1,2 and write down the largest x among them.";
+                solution = String.valueOf(Math.max(x1, x2));
+                explanation = "To solve this, use the formula " +quadraticFormula;
+        }
+        return new Question(QUADRATIC_EQUATION,content,difficulty,solution,explanation);
     }
 
     private static Question generateInvoiceSeries(int difficulty) {
@@ -33,21 +51,20 @@ public class QuestionGenerator {
         int d = generateRandomNumber(difficulty);
         int n = generateRandomNumberForN(difficulty);
         int an = a1 + ((n - 1) * d);
+        int Sn = (n * (a1 + an)) / 2;
         String content, solution, explanation;
         switch (difficulty) {
             case LEVEL_ONE:
-            case LEVEL_TWO:
                 content = "a1 = " + a1 + ", d = " + d + ", a" + n + " = ?";
                 solution = String.valueOf(an);
-                explanation = "To solve this, use the formula an = a1 + (n -1) * d ";
+                explanation = "To solve this, use the formula " + anFormula;
                 break;
-            case LEVEL_THREE:
+            case LEVEL_TWO:
                 content = " an = " + an + ", d = " + d + ", n = " + n + " a1 = ?";
                 solution = String.valueOf(a1);
-                explanation = "To solve this, " + an + " = a1 + (" + n + " - 1) * " + d;
+                explanation = "To solve this, use the formula " + anFormula;
                 break;
-            case LEVEL_FOUR:
-            default:
+            case LEVEL_THREE:
                 int n2 = generateRandomNumberForN(difficulty);
                 int an2 = a1 + ((n2 - 1) * d);
 
@@ -56,6 +73,18 @@ public class QuestionGenerator {
                 solution = String.valueOf(a1);
                 explanation = "To solve this, [ a" + n + " = a1 + (" + n + " - 1) * d ]" + " - " +
                               "[ a" + n2 + " = a1 + (" + n2 + " - 1) * d ]";
+                break;
+            case LEVEL_FOUR:
+                content = " a1 = " + a1 + ", d = " + d + ", n = " + n + ", S" + n + " = ?";
+                solution = String.valueOf(Sn);
+                explanation = "To solve this, use the formula " + snFormula;
+                break;
+            case LEVEL_FIVE:
+            default:
+                content = " a1 = " + a1 + ", d = " + d + ", Sn" + " = " + Sn + ", n = ?" +
+                          " *Remember n cannot be a negative or decimal value.*";
+                solution = String.valueOf(n);
+                explanation = "Use the formulas " + snFormula + " And " + quadraticForInvoiceFormula;
                 break;
         }
         return new Question(INVOICE_SERIES, content, difficulty, solution, explanation);
@@ -235,6 +264,13 @@ public class QuestionGenerator {
         return (random.nextInt(1, 10)) + difficulty;
     }
 
+    private static int generateRandomForQuadEquNumber(int difficulty) {
+        if (difficulty == 1){
+            difficulty = generateRandomNumber(difficulty);
+        }
+        return random.nextInt(difficulty * 2 + 1) - difficulty;
+    }
+
     private static String calculateResult(int a, int b, String operator) {
         return switch (operator) {
             case "+" -> String.valueOf(a + b);
@@ -258,7 +294,7 @@ public class QuestionGenerator {
         int count = 5;
         boolean isValid = true;
         while (isValid) {
-            System.out.println(generateInvoiceSeries(11));
+            System.out.println(generateQuadraticEquation(1));
             count--;
             if (count == 0) {
                 isValid = false;
