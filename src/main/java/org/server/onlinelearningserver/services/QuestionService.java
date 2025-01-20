@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.server.onlinelearningserver.utils.Constants.Question.*;
 
@@ -187,6 +188,21 @@ public class QuestionService {
                 .toList();
     }
 
+    public List<QuestionDto> getQuestionsAnsweredIncorrectly(User user){
+        List<QuestionHistory> answeredIncorrectHistories  = questionHistoryRepository.findByUser(user)
+                .stream()
+                .filter(history-> !history.isCorrect())
+                .toList();
+
+        return answeredIncorrectHistories.stream()
+                .map(h -> new QuestionDto(
+                        h.getQuestion().getId(),
+                        h.getQuestion().getCategory(),
+                        h.getQuestion().getContent(),
+                        h.getQuestion().getDifficulty()))
+                .toList();
+    }
+
     public DashboardResponse getDashboard(String token,String username) {
         User user = userRepository.findByUsername(username);
 
@@ -215,6 +231,8 @@ public class QuestionService {
 
 
         List<QuestionDto> openQuestions = getUnansweredQuestions(user);
+
+        List<QuestionDto> questionAnsweredIncorrectly = getQuestionsAnsweredIncorrectly(user);
 
         List<WeakPointDto> weakPoints = progressRepository.findWeakPointsByUser(user);
 
@@ -260,6 +278,7 @@ public class QuestionService {
                 "All details send."
                 ,successStreaks,
                 openQuestions,
+                questionAnsweredIncorrectly,
                 weakPoints,
                 currentLevels,
                 correctAnswersPerCategory,

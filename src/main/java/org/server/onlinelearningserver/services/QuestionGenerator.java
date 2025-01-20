@@ -4,6 +4,9 @@ import org.server.onlinelearningserver.entitys.Question;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import static org.server.onlinelearningserver.utils.Constants.Question.*;
@@ -82,7 +85,14 @@ public class QuestionGenerator {
             default:
                 content = "A = " + a + ", B = " + b + ", C = " + c + " *✦ Find X₁,₂ and write down the largest X among them.";
                 solution = String.valueOf(Math.max(x1, x2));
-                explanation = "✦ To solve this *✦Use the formula: " +quadraticFormula;
+                //explanation = "✦ To solve this *✦Use the formula: " +quadraticFormula;
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בנוסחת השורשים: " + quadraticFormula,
+                        "*✦ step 2: חישוב הדלתא (Δ): Δ = b² - 4ac",
+                        "*✦ step 3: חישוב שורשים: X₁ = (-b + √Δ) / 2a, X₂ = (-b - √Δ) / 2a",
+                        "*✦ step 4: כתוב את השורש הגדול ביותר מביניהם: " + Math.max(x1, x2)
+                );
+
                 break;
         }
         return new Question(QUADRATIC_EQUATION,content,difficulty,solution,explanation);
@@ -145,18 +155,49 @@ public class QuestionGenerator {
 
         switch (difficulty) {
             case LEVEL_ONE:
+                content = a + " ➕ " + b + " = ?";
+                solution = calculateResult(a, b, "+");
+                explanation = "✦ To solve this *✦ Simply add " + a + " and " + b + ".";
+                break;
             case LEVEL_TWO:
+                a += generateRandomNumber(difficulty);
+                b += generateRandomNumber(difficulty);
                 content = a + " ➕ " + b + " = ?";
                 solution = calculateResult(a, b, "+");
                 explanation = "✦ To solve this *✦ Simply add " + a + " and " + b + ".";
                 break;
             case LEVEL_THREE:
+                num = generateRandomNumber(difficulty);
+                num2 = generateRandomNumber(difficulty);
+                x = generateRandomNumber(difficulty);
+                solution = calculateResult(a, b, "+");
+
+                List<String> options = new ArrayList<>();
+                options.add(String.valueOf(num));
+                options.add(String.valueOf(num2));
+                options.add(String.valueOf(x));
+                options.add(String.valueOf(solution));
+
+                Collections.shuffle(options);
+
+                content = String.join("\n",
+                        a + " ➕ " + b + " = ?",
+                        "*✦ What is the right solution?",
+                        "*• " + options.get(0),
+                        "*• " + options.get(1),
+                        "*• " + options.get(2),
+                        "*• " + options.get(3)
+                );
+
+                explanation = "✦ To solve this *✦ Simply add " + a + " and " + b + ".";
+                break;
+            case LEVEL_FOUR:
                 result = a + generateRandomNumber(difficulty);
                 content = a + " ➕ " + "X" + " = " + result + " *X = ?";
                 solution = calculateResult(result, a, "-");
                 explanation = "✦ To find X *✦ Subtract " + a + " from " + result + ".";
                 break;
-            case LEVEL_FOUR:
+            case LEVEL_FIVE:
                 x = generateRandomNumber(2);
                 num = generateRandomNumber(2);
                 a = generateRandomNumber(2);
@@ -165,7 +206,7 @@ public class QuestionGenerator {
                 solution = String.valueOf(x);
                 explanation = "✦ To find X *✦ Isolate the x on one side and the numbers on the other *then divide the result.";
                 break;
-            case LEVEL_FIVE:
+            case LEVEL_SIX:
             default:
                 x = generateRandomNumber(2);
                 num = generateRandomNumber(2);
@@ -186,12 +227,42 @@ public class QuestionGenerator {
         String content, solution, explanation;
         switch (difficulty) {
             case LEVEL_ONE:
+                content = a + " ➖ " + b + " = ?";
+                solution = calculateResult(a, b, "-");
+                explanation = "✦ To solve this, *✦ Simply subtract " + a + " less " + b + ".";
+                break;
             case LEVEL_TWO:
+                a += generateRandomNumber(difficulty);
+                b += generateRandomNumber(difficulty);
                 content = a + " ➖ " + b + " = ?";
                 solution = calculateResult(a, b, "-");
                 explanation = "✦ To solve this, *✦ Simply subtract " + a + " less " + b + ".";
                 break;
             case LEVEL_THREE:
+                int num = generateRandomNumber(difficulty);
+                int num2 = generateRandomNumber(difficulty);
+                int x = generateRandomNumber(difficulty);
+                solution = calculateResult(a, b, "-");
+
+                List<String> options = new ArrayList<>();
+                options.add(String.valueOf(num));
+                options.add(String.valueOf(num2));
+                options.add(String.valueOf(x));
+                options.add(String.valueOf(solution));
+
+                Collections.shuffle(options);
+
+                content = String.join("\n",
+                        a + " ➖ " + b + " = ?",
+                        "*✦ What is the right solution?",
+                        "*• " + options.get(0),
+                        "*• " + options.get(1),
+                        "*• " + options.get(2),
+                        "*• " + options.get(3)
+                );
+
+                explanation = "✦ To solve this, *✦ Simply subtract " + a + " less " + b + ".";
+                break;
             case LEVEL_FOUR:
             default:
                 a = generateRandomNumberPow(difficulty);

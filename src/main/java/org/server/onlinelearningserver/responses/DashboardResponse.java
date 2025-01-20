@@ -15,6 +15,7 @@ import java.util.Map;
 public class DashboardResponse extends BasicResponse {
     private List<CategorySuccessStreakDto> successStreak;
     private List<QuestionDto> openQuestions;
+    private List<QuestionDto> questionsAnsweredIncorrectly;
     private List<WeakPointDto> weakPoints;
     private List<CategoryProgressDto> currentLevels;
     private Map<String, Integer> correctAnswersPerCategory;
@@ -26,13 +27,15 @@ public class DashboardResponse extends BasicResponse {
     private double totalSuccessRate;
 
     public DashboardResponse(boolean success, String error, List<CategorySuccessStreakDto> successStreak,
-                             List<QuestionDto> openQuestions, List<WeakPointDto> weakPoints,
+                             List<QuestionDto> openQuestions, List<QuestionDto> questionsAnsweredIncorrectly,
+                             List<WeakPointDto> weakPoints,
                              List<CategoryProgressDto> currentLevels, Map<String, Integer> correctAnswersPerCategory,
                              Map<String, Integer> incorrectAnswersPerCategory, Map<String, Double> successRate,
                              int totalCorrectAnswers, int totalIncorrectAnswers,int totalUnansweredQuestion,double totalSuccessRate) {
         super(success, error);
         this.successStreak = successStreak;
         this.openQuestions = openQuestions;
+        this.questionsAnsweredIncorrectly = questionsAnsweredIncorrectly;
         this.weakPoints = weakPoints;
         this.currentLevels = currentLevels;
         this.correctAnswersPerCategory = correctAnswersPerCategory;

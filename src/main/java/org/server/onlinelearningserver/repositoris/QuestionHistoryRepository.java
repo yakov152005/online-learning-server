@@ -13,4 +13,5 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
 
     List<QuestionHistory> findByUser(@Param("user") User user);
 
+
 }
