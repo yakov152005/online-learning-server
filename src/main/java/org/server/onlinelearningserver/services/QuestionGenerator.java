@@ -18,7 +18,6 @@ public class QuestionGenerator {
 
 
     public Question generateQuestion(String category, int difficulty) {
-
         return switch (category) {
             case ADD -> generateAdditionQuestion(difficulty);
             case SUB -> generateSubtractionQuestion(difficulty);
@@ -49,23 +48,36 @@ public class QuestionGenerator {
         String content, solution, explanation;
         switch (difficulty) {
             case LEVEL_ONE:
-                content = "x₁,y₁ = (" + x1 + "," + y1 + "),  x₂,y₂ = (" + x2 + "," + y2 + ")  *m = ?";
+                content = "x₁,y₁ = (" + x1 + "," + y1 + "),  x₂,y₂ = (" + x2 + "," + y2 + ")  *✦ m = ?";
                 solution = String.valueOf(m);
-                explanation = "✦ To solve this *✦ Use the formula " + findMFormula;
+                explanation = String.join("\n",
+                        "✦ step 1:הצב את הערכים הנתונים לפי הסדר במשוואת השיפוע : " + findMFormula,
+                        "*✦ step 2: צמצם כל חלק בנפרד על ידי חיסור/חיבור התוצאה",
+                        "*✦ step 3: חלק את התוצאה",
+                        "*✦ step 4: רשום את התשובה"
+                );
                 break;
             case LEVEL_TWO:
-                content = "x₁,y₁ = (" + x1 + "," + y1 + "),  m = " + m + " *✦ Find the y=mx+b" +
-                          " *✦ Please write the full equation y=mx+b";
+                content = "x₁,y₁ = (" + x1 + "," + y1 + "),  m = " + m + " *✦ Find the " + mathFormula +
+                          " *✦ Please write the full equation " + mathFormula;
                 solution = result;
-                explanation = "✦ To solve this *use the formula " + equationLineFormula;
+                explanation = String.join("\n",
+                        "✦ step 1: הצב את הערכים במשוואת קו הישר: " + equationLineFormula,
+                        "*✦ step 2: פתח סוגריים והעבר אגפים",
+                        "*✦ step 3: כתוב את התוצאה בצורה הזאת: " + mathFormula
+                );
                 break;
             case LEVEL_THREE:
             default:
-                content = "x₁,y₁ = (" + x1 + "," + y1 + "), x₂,y₂ = (" + x2 + "," + y2 + ") *Find the y=mx+b" +
+                content = "x₁,y₁ = (" + x1 + "," + y1 + "), x₂,y₂ = (" + x2 + "," + y2 + ") *✦ Find the y=mx+b" +
                           " *✦ Please write the full equation y=mx+b";
                 solution = result;
-                explanation = "✦ To solve this *✦Find first the m with formula: " + findMFormula +
-                " *✦And for find equation line use the " + equationLineFormula;
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בנוסחא למציאת השיפוע : " + findMFormula,
+                        "*✦ step 2: הצב את הערכים  במשוואת קו הישר: " + equationLineFormula,
+                        "*✦ step 3: פתח סוגריים והעבר אגפים",
+                        "*✦ step 4: כתוב את התוצאה בצורה הזאת: " + mathFormula
+                );
                 break;
         }
 
@@ -85,14 +97,12 @@ public class QuestionGenerator {
             default:
                 content = "A = " + a + ", B = " + b + ", C = " + c + " *✦ Find X₁,₂ and write down the largest X among them.";
                 solution = String.valueOf(Math.max(x1, x2));
-                //explanation = "✦ To solve this *✦Use the formula: " +quadraticFormula;
                 explanation = String.join("\n",
                         "✦ step 1: השתמש בנוסחת השורשים: " + quadraticFormula,
-                        "*✦ step 2: חישוב הדלתא (Δ): Δ = b² - 4ac",
+                        "*✦ step 2: חישוב הדלתא (Δ): " + deltaFormula,
                         "*✦ step 3: חישוב שורשים: X₁ = (-b + √Δ) / 2a, X₂ = (-b - √Δ) / 2a",
-                        "*✦ step 4: כתוב את השורש הגדול ביותר מביניהם: " + Math.max(x1, x2)
+                        "*✦ step 4: כתוב את השורש הגדול ביותר מביניהם"
                 );
-
                 break;
         }
         return new Question(QUADRATIC_EQUATION,content,difficulty,solution,explanation);
@@ -107,41 +117,65 @@ public class QuestionGenerator {
         String content, solution, explanation;
         switch (difficulty) {
             case LEVEL_ONE:
-                content = "a1 = " + a1 + ", d = " + d + " *a" + n + " = ?";
+                content = "a1 = " + a1 + ", d = " + d + " *✦ a" + n + " = ?";
                 solution = String.valueOf(an);
-                explanation = "✦ To solve this *✦ Use the formula " + anFormula;
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בנוסחת מציאת איבר ה : " + anFormula,
+                        "*✦ step 2: הצב את הערכים הנתונים לך ",
+                        "*✦ step 3: חישוב כל חלק בנפרד כולל פתיחת סוגריים ",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_TWO:
-                content = " an = " + an + ", d = " + d + ", n = " + n + " *a1 = ?";
+                content = " an = " + an + ", d = " + d + ", n = " + n + " *✦ a1 = ?";
                 solution = String.valueOf(a1);
-                explanation = "✦ To solve this *✦ Use the formula " + anFormula;
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בנוסחת מציאת איבר ה : " + anFormula,
+                        "*✦ step 2: הצב את הערכים הנתונים לך ",
+                        "*✦ step 3: שים לב הפעם צריך למצוא את איבר הראשון אז בצע העברת אגפים ובודד את האיבר הראשון",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_THREE:
                 int n2 = generateRandomNumberForN(difficulty);
                 int an2 = a1 + ((n2 - 1) * d);
 
-                content = "a" + n + " = " + an + ", a" + n2 + " = " + an2 + " *a1 = ? " + ", d = ?" +
+                content = "a" + n + " = " + an + ", a" + n2 + " = " + an2 + " *✦ a1 = ? " + ", d = ?" +
                           " *✦ You should write the answer for a1 and not for d";
                 solution = String.valueOf(a1);
                 explanation = String.join("\n",
-                        "✦ To solve this, Place in the formulas: ",
+                        "✦ step 1: הצב בנוסחאות : " +
                         "*[a" + n + " = a1 + (" + n + " - 1) ✱ d]",
                         "*➖",
-                        "*[a" + n2 + " = a1 + (" + n2 + " - 1) ✱ d]"
+                        "*[a" + n2 + " = a1 + (" + n2 + " - 1) ✱ d]",
+                        "*✦ step 2: צמצם את המשוואות ואז תחסר את האיבר הראשון כדי למצוא את הדילוגים ",
+                        "*✦ step 3: אחרי שמצאת את הדילוגים, תוכל למצוא את האיבר הראשון בקלות על ידי הצבה בנוסחה: " + anFormula ,
+                        "*✦ step 4: רשום את התשובה הסופית של ה a1 שיצאה לך. "
                 );
-
                 break;
             case LEVEL_FOUR:
-                content = " a1 = " + a1 + ", d = " + d + ", n = " + n + " *S" + n + " = ?";
+                content = " a1 = " + a1 + ", d = " + d + ", n = " + n + " *✦ S" + n + " = ?";
                 solution = String.valueOf(Sn);
-                explanation = "✦ To solve this *✦ Use the formula: " + snFormula;
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בנוסחת מציאת סכום ה : " + snFormula,
+                        "*✦ step 2: הצב את הערכים הנתונים לך ",
+                        "*✦ step 3: חשב את התוצאה",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_FIVE:
             default:
-                content = " a1 = " + a1 + ", d = " + d + ", Sn" + " = " + Sn + " *n = ?" +
+                content = " a1 = " + a1 + ", d = " + d + ", Sn" + " = " + Sn + " *✦ n = ?" +
                           " *✦ Remember n cannot be a negative or decimal value.";
                 solution = String.valueOf(n);
-                explanation = "✦ Use the formulas: *" + snFormula + " *And *" + quadraticForInvoiceFormula;
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בנוסחת מציאת סכום ה : " + snFormula,
+                        "*✦ step 2: הצב את הערכים הנתונים לך , חשב את הערכים והעבר אגפים ",
+                        "*✦ step 3:כאשר '?' מייצג מספר חופשי A=?n^2 B=?n C=?  סדר לפי",
+                        "*✦ step 4: n הצב את הערכים במשוואה ריבועית כדי למצוא את ה " + quadraticForInvoiceFormula,
+                        "*✦ step 5: הטובה כלומר לא שלילית ולא עשרונית n רשום בתשובה רק את התוצאה של "
+
+                );
                 break;
         }
         return new Question(INVOICE_SERIES, content, difficulty, solution, explanation);
@@ -157,14 +191,24 @@ public class QuestionGenerator {
             case LEVEL_ONE:
                 content = a + " ➕ " + b + " = ?";
                 solution = calculateResult(a, b, "+");
-                explanation = "✦ To solve this *✦ Simply add " + a + " and " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: חבר את המספר הראשון עם המספר השני ",
+                        "*✦ step 2: " + a + " + " + b,
+                        "*✦ step 3: חשב את התוצאה",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_TWO:
                 a += generateRandomNumber(difficulty);
                 b += generateRandomNumber(difficulty);
                 content = a + " ➕ " + b + " = ?";
                 solution = calculateResult(a, b, "+");
-                explanation = "✦ To solve this *✦ Simply add " + a + " and " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: חבר את המספר הראשון עם המספר השני ",
+                        "*✦ step 2: " + a + " + " + b,
+                        "*✦ step 3: חשב את התוצאה",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_THREE:
                 num = generateRandomNumber(difficulty);
@@ -189,22 +233,38 @@ public class QuestionGenerator {
                         "*• " + options.get(3)
                 );
 
-                explanation = "✦ To solve this *✦ Simply add " + a + " and " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: חבר את המספר הראשון עם המספר השני ",
+                        "*✦ step 2: " + a + " + " + b,
+                        "*✦ step 3: חשב את התוצאה",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_FOUR:
                 result = a + generateRandomNumber(difficulty);
-                content = a + " ➕ " + "X" + " = " + result + " *X = ?";
+                content = a + " ➕ " + "X" + " = " + result + " *✦ X = ?";
                 solution = calculateResult(result, a, "-");
-                explanation = "✦ To find X *✦ Subtract " + a + " from " + result + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: העבר את המספר מצידו השמאלי של האיקס לאגף השני ",
+                        "*✦ step 2: החלף סימן למספר שהעברת אגף כלומר מ + ל - כלל ההיפוך",
+                        "*✦ step 3: ועכשיו זה יראה ככה : " + a + " - " + result,
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_FIVE:
                 x = generateRandomNumber(2);
                 num = generateRandomNumber(2);
                 a = generateRandomNumber(2);
                 result = (num*x) + a;
-                content = num + "X ➕ " + a + " = " + result + " * X = ?";
+                content = num + "X ➕ " + a + " = " + result + " *✦ X = ?";
                 solution = String.valueOf(x);
-                explanation = "✦ To find X *✦ Isolate the x on one side and the numbers on the other *then divide the result.";
+                explanation = String.join("\n",
+                        "✦ step 1: העבר את המספר מצידו הימני של האיקס לאגף השני ",
+                        "*✦ step 2: החלף סימן למספר שהעברת אגף כלומר מ + ל - כלל ההיפוך",
+                        "*✦ step 3: ועכשיו זה יראה ככה : " + a + " - " + result,
+                        "*✦ step 4: אחרי שמצאת כמה אגף ימין שווה, חלק את המספר שבאגף ימין במקדם של איקס " +  num + " / " + (result-a),
+                        "*✦ step 5: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_SIX:
             default:
@@ -213,9 +273,15 @@ public class QuestionGenerator {
                 num2 = generateRandomNumber(3);
                 a = generateRandomNumber(2);
                 result = (num*x) + (num2*x) + a;
-                content = num + "X ➕ " + a + " ➕ " + num2 + "X = " + result + " * X = ?";
+                content = num + "X ➕ " + a + " ➕ " + num2 + "X = " + result + " *✦ X = ?";
                 solution = String.valueOf(x);
-                explanation = "✦ To find X *✦ Isolate the x on one side and the numbers on the other *then divide the result.";
+                explanation = String.join("\n",
+                        "✦ step 1: העבר אגפים את האיקסים בצד אחד והמספרים החופשיים בצד שני ",
+                        "*✦ step 2: החלף סימן למספר שהעברת אגף כלומר מ + ל - כלל ההיפוך",
+                        "*✦ step 3: ועכשיו אחרי שהעברת אגפים, צמצם איקסים ומספרים חופשיים בכל צד",
+                        "*✦ step 4: אחרי שמצאת כמה אגף ימין שווה, וכמה אגף שמאל שווה. חלק את המספר שבאגף ימין במקדם של איקס: " + (num+num2)  + " / " + (result-a ),
+                        "*✦ step 5: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
         }
         return new Question(ADD, content, difficulty, solution, explanation);
@@ -229,14 +295,24 @@ public class QuestionGenerator {
             case LEVEL_ONE:
                 content = a + " ➖ " + b + " = ?";
                 solution = calculateResult(a, b, "-");
-                explanation = "✦ To solve this, *✦ Simply subtract " + a + " less " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: חסר את המספר השני מהמספר הראשון ",
+                        "*✦ step 2: " + a + " - " + b,
+                        "*✦ step 3: חשב את התוצאה",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_TWO:
                 a += generateRandomNumber(difficulty);
                 b += generateRandomNumber(difficulty);
                 content = a + " ➖ " + b + " = ?";
                 solution = calculateResult(a, b, "-");
-                explanation = "✦ To solve this, *✦ Simply subtract " + a + " less " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: חסר את המספר השני מהמספר הראשון ",
+                        "*✦ step 2: " + a + " - " + b,
+                        "*✦ step 3: חשב את התוצאה",
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_THREE:
                 int num = generateRandomNumber(difficulty);
@@ -260,17 +336,26 @@ public class QuestionGenerator {
                         "*• " + options.get(2),
                         "*• " + options.get(3)
                 );
-
-                explanation = "✦ To solve this, *✦ Simply subtract " + a + " less " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: חסר את המספר השני מהמספר הראשון ",
+                        "*✦ step 2: " + a + " - " + b,
+                        "*✦ step 3: חשב את התוצאה",
+                        "*✦ step 4: בחור את התשובה הסופית מהתשובות בחירה , ורשום את המספר של התוצאה"
+                );
                 break;
             case LEVEL_FOUR:
             default:
                 a = generateRandomNumberPow(difficulty);
                 int result = generateRandomNumberPow(difficulty);
                 b = a - result;
-                content = a + " ➖ " + "X" + " = " + b + " *X = ?";
+                content = a + " ➖ " + "X" + " = " + b + " *✦ X = ?";
                 solution = String.valueOf(result);
-                explanation = "✦ To find X *✦ Subtract " + a + " from " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: העבר את המספר מצד שמאל של איקס לאגף השני ",
+                        "*✦ step 2: אל תשכח להחליף סימן מ + ל - אמור להראות ככה :  " ,"-X"," = " ,b +  " - " + a,
+                        "*✦ step 3: חשב את אגף ימין ואז חלק את אגף ימין במקדם של איקס (1-) :  X = " + (b - a) + "/(-1)" ,
+                        "*✦ step 4: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
         }
         return new Question(SUB, content, difficulty, solution, explanation);
@@ -284,7 +369,11 @@ public class QuestionGenerator {
             case LEVEL_ONE:
                 content = a + " ✱ " + b + " = ?";
                 solution = String.valueOf(a * b);
-                explanation = "✦ To solve this *✦ Simply multiply " + a + " and " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התרגיל הזה פשוט הכפל את המספר הראשון במספר השני ",
+                        "*✦ step 2: " +  a + " ✱ " + b,
+                        "*✦ step 3: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_TWO:
             default:
@@ -292,7 +381,11 @@ public class QuestionGenerator {
                 b = result / a;
                 content = a + " ✱ " + "X" + " = " + result + " *X = ?";
                 solution = String.valueOf(b);
-                explanation = "✦ To find X *✦ Divide " + result + " by " + a + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התרגיל הזה העבר את המספר שמשמאל לאיקס אגף  ",
+                        "*✦ step 2: אחרי העברת האגף וודא שהחלפת את הסימן מ ✱ ל / אמור להראות ככה : X = " + result + " / " + a,
+                        "*✦ step 3: חלק את המספר ורשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
         }
 
@@ -317,7 +410,11 @@ public class QuestionGenerator {
 
                 content = b + " ➗ " + a + " = ?";
                 solution = String.valueOf(b / a);
-                explanation = "✦ To solve this *✦ Simply division " + a + " by " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התרגיל הזה חלק את המספר הראשון במספר השני  ",
+                        "*✦ step 2: זה אמור להראות ככה: " + a + " / " + b,
+                        "*✦ step 3: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_THREE:
             case LEVEL_FOUR:
@@ -333,9 +430,13 @@ public class QuestionGenerator {
                 }
 
                 a = b * result;
-                content = "X ➗ " + b + " = " + result + " *X = ?";
+                content = "X ➗ " + b + " = " + result + " *✦ X = ?";
                 solution = String.valueOf(a);
-                explanation = "✦ To find X *✦ Multiply " + result + " by " + b + ".";
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התרגיל הזה העבר את המספר מימין לאיקס אגף לצד ימין של המספרים  ",
+                        "*✦ step 2: החלף סימן מ / ל ✱, זה אמור להראות ככה : " + b + " ✱  " + result,
+                        "*✦ step 3: הכפל את המספרים, רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
         }
 
@@ -358,7 +459,11 @@ public class QuestionGenerator {
 
                 content = String.format("%s שם %d %s %s ולאחר מכן הוסיף עוד %d. * כמה %s יש ל%s עכשיו?", boyName, a, item2, item1, b, item2, boyName);
                 solution = String.valueOf(result);
-                explanation = String.format("ת. %d ועוד %d הם %d.", a, b, result);
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התרגיל הזה, חבר את המספר הראשון עם המספר השני  ",
+                        "*✦ step 2:  זה אמור להראות ככה : " + b + " +  " + a,
+                        "*✦ step 3: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
             case LEVEL_TWO:
             default:
@@ -367,9 +472,14 @@ public class QuestionGenerator {
                 a += b;
                 result = a - b;
 
-                content = String.format("%s קנתה %d %s, אך נתנה %d ל%s. *כמה %s נשאר לה?", girlName, a, fruitName, b, boyName, fruitName);
+                content = String.format("%s קנתה %d %s, אך נתנה %d ל%s. *כמה %s נשאר ל%s?", girlName, a, fruitName, b, boyName, fruitName,girlName);
                 solution = String.valueOf(result);
                 explanation = String.format("ת. %d פחות %d הם %d", a, b, result);
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התרגיל הזה, חסר את המספר השני מהמספר הראשון",
+                        "*✦ step 2:  זה אמור להראות ככה : " + b + " -  " + a,
+                        "*✦ step 3: רשום את התשובה הסופית שיצאה לך במספרים"
+                );
                 break;
         }
 
@@ -411,7 +521,7 @@ public class QuestionGenerator {
         int count = 5;
         boolean isValid = true;
         while (isValid) {
-            System.out.println(generateAdditionQuestion(54));
+            System.out.println(generateSubtractionQuestion(4));
             count--;
             if (count == 0) {
                 isValid = false;

@@ -27,6 +27,7 @@ public class Question {
     @Column(nullable = false)
     private String solution;
 
+    @Transient
     private String explanation;
 
     @Column(nullable = false)

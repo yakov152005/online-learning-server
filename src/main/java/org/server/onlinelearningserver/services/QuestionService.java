@@ -135,9 +135,16 @@ public class QuestionService {
         int currentLevel = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
         int successStreak = progress.getCategorySuccessStreak().getOrDefault(activeCategory, 0);
 
+        // בדיקה האם המשתמש היה ברמה הזו בעבר
+        int REQUIRED_STREAK = FOR_LEVEL_UP; // לא היה ברמה הבאה
+        if (questionHistoryRepository.wasLevelReached(user, activeCategory, currentLevel + 1)){
+            REQUIRED_STREAK = USER_WAS_AT_THE_NEXT_LEVEL; // היה ברמה הבאה אז יותר קל לעלות אלייה כדי שלא ישתעמם
+        }
+
+
         if (isCorrect) {
             successStreak++;
-            if (successStreak >= FOR_LEVEL_UP) {
+            if (successStreak >= REQUIRED_STREAK) {
                 progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
                 isLevelUp = true;
                 successStreak = RESET_AFTER_LEVEL_UP;
@@ -170,7 +177,6 @@ public class QuestionService {
 
         return isLevelUp;
     }
-
 
     public void saveQuestionHistory(User user, Question question, boolean isCorrect) {
         QuestionHistory history = new QuestionHistory();
