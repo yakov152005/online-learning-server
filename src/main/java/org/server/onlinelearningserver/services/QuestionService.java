@@ -120,7 +120,7 @@ public class QuestionService {
         saveQuestionHistory(user,question,isCorrect);
         boolean isLevelUp = updateProgress(user,isCorrect,question.getCategory());
 
-        return new SubmitResponse(isCorrect, isCorrect ? "Correct answer!" : "Wrong answer.", isLevelUp);
+        return new SubmitResponse(isCorrect, isCorrect ? "Correct answer!" : "Wrong answer.", isLevelUp, isCorrect ? "" :question.getSolution());
     }
 
 
