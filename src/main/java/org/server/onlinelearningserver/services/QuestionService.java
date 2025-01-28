@@ -78,12 +78,6 @@ public class QuestionService {
         String activeCategory = progress.getActiveCategory();
         int difficulty = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
 
-       /*
-        double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
-        if (Math.random() < weaknessFactor) {
-            difficulty = Math.max(difficulty - 1, 1);
-        }
-        */
 
         Question question = questionGenerator.generateQuestion(activeCategory, difficulty);
         question.setProgress(progress);
@@ -114,19 +108,25 @@ public class QuestionService {
             return new SubmitResponse(false,"Question not found.",false);
         }
 
+
         question.setAnswered(true);
         boolean isCorrect = question.getSolution().equals(userAnswer);
 
         saveQuestionHistory(user,question,isCorrect);
-        boolean isLevelUp = updateProgress(user,isCorrect,question.getCategory());
+        Map<String,Boolean> levelUpOrDown = updateProgress(user,isCorrect,question.getCategory());
 
-        return new SubmitResponse(isCorrect, isCorrect ? "Correct answer!" : "Wrong answer.", isLevelUp, isCorrect ? "" :question.getSolution());
+        boolean isLevelUp = levelUpOrDown.get("isLevelUp");
+        boolean isLevelDown = levelUpOrDown.get("isLevelDown");;
+
+        return new SubmitResponse(isCorrect, isCorrect ? "Correct answer!" : "Wrong answer.", isLevelUp, isLevelDown, isCorrect ? "" :question.getSolution());
     }
 
 
 
-    public boolean updateProgress(User user, boolean isCorrect, String activeCategory) {
-        boolean isLevelUp = false;
+    public Map<String,Boolean> updateProgress(User user, boolean isCorrect, String activeCategory) {
+        Map<String, Boolean> levelUpOrDown = new HashMap<>();
+        levelUpOrDown.put("isLevelUp", false);
+        levelUpOrDown.put("isLevelDown", false);
         Progress progress = progressRepository.findByUser(user);
         if (progress == null) {
             throw new IllegalStateException("Progress not found for user: " + user.getUsername());
@@ -146,7 +146,7 @@ public class QuestionService {
             successStreak++;
             if (successStreak >= REQUIRED_STREAK) {
                 progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
-                isLevelUp = true;
+                levelUpOrDown.put("isLevelUp",true);
                 successStreak = RESET_AFTER_LEVEL_UP;
             }
         } else {
@@ -164,6 +164,7 @@ public class QuestionService {
                 if (Math.random() < weaknessFactor) {
                     if (currentLevel > LEVEL_HIGH_THEN_ONE) {
                         progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
+                        levelUpOrDown.put("isLevelDown",true);
                         weakPoints.put(activeCategory, 0);
                         progress.setWeakPoints(weakPoints);
                     }
@@ -175,7 +176,7 @@ public class QuestionService {
 
         progressRepository.save(progress);
 
-        return isLevelUp;
+        return levelUpOrDown;
     }
 
     public void saveQuestionHistory(User user, Question question, boolean isCorrect) {

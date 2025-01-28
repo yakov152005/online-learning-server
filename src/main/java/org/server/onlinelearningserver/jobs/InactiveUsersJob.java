@@ -22,12 +22,12 @@ public class InactiveUsersJob {
 
 
     @Autowired
-    public InactiveUsersJob(UserRepository userRepository,SessionRepository sessionRepository){
+    public InactiveUsersJob(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
 
-    @Scheduled(cron = "0 43 23 * * *")
+    @Scheduled(cron = "0 * 10 * * *")
     public void sendMailToNotLoggedUsers(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -7);

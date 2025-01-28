@@ -56,11 +56,14 @@ public class Constants {
         public static final int LEVEL_FIVE = 5;
         public static final int LEVEL_SIX = 6;
 
-        public static final int FOR_LEVEL_UP = 5;
-        public static final int USER_WAS_AT_THE_NEXT_LEVEL = 1;
+        public static final int FOR_LEVEL_UP = 10;
+        public static final int USER_WAS_AT_THE_NEXT_LEVEL = 5;
+
         public static final int RESET_AFTER_LEVEL_UP = 0;
         public static final int RESET_AFTER_ERROR_ANSWER = 0;
+
         public static final int ERROR_HIGH_THEN_FIVE = 5;
+
         public static final int LEVEL_HIGH_THEN_ONE = 1;
 
         public static final String quadraticForInvoiceFormula = "n₁,₂  = (-b ± √(b² - 4ac)) / 2a";
