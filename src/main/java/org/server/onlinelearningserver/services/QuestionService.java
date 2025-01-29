@@ -112,7 +112,7 @@ public class QuestionService {
 
 
         question.setAnswered(true);
-        boolean isCorrect = question.getSolution().equals(userAnswer);
+        boolean isCorrect = question.getSolution().equalsIgnoreCase(userAnswer);
 
         saveQuestionHistory(user,question,isCorrect);
         Map<String, Object> progressStatus = updateProgress(user, isCorrect, question.getCategory());
