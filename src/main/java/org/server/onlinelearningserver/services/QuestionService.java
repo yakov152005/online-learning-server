@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.server.onlinelearningserver.utils.Constants.Question.*;
 
@@ -83,6 +82,9 @@ public class QuestionService {
         question.setProgress(progress);
         questionRepository.save(question);
 
+        int successStreak = progress.getCategorySuccessStreak().getOrDefault(activeCategory, 0);
+
+
         QuestionDto questionDto = new QuestionDto(
                 question.getId(),
                 question.getCategory(),
@@ -92,7 +94,7 @@ public class QuestionService {
                 question.getExplanation()
         );
 
-        return new QuestionResponse(true, "Question sent successfully.", questionDto);
+        return new QuestionResponse(true, "Question sent successfully.", questionDto,successStreak);
     }
 
 
@@ -113,20 +115,29 @@ public class QuestionService {
         boolean isCorrect = question.getSolution().equals(userAnswer);
 
         saveQuestionHistory(user,question,isCorrect);
-        Map<String,Boolean> levelUpOrDown = updateProgress(user,isCorrect,question.getCategory());
+        Map<String, Object> progressStatus = updateProgress(user, isCorrect, question.getCategory());
 
-        boolean isLevelUp = levelUpOrDown.get("isLevelUp");
-        boolean isLevelDown = levelUpOrDown.get("isLevelDown");;
+        boolean isLevelUp = (boolean) progressStatus.get("isLevelUp");
+        boolean isLevelDown = (boolean) progressStatus.get("isLevelDown");
+        Map<String, Integer> successStreaksByCategory = (Map<String, Integer>) progressStatus.get("successStreaksByCategory");
 
-        return new SubmitResponse(isCorrect, isCorrect ? "Correct answer!" : "Wrong answer.", isLevelUp, isLevelDown, isCorrect ? "" :question.getSolution());
+        return new SubmitResponse(
+                isCorrect,
+                isCorrect ? "Correct answer!" : "Wrong answer.",
+                isLevelUp,
+                isLevelDown,
+                isCorrect ? "" : question.getSolution(),
+                successStreaksByCategory
+        );
     }
 
 
 
-    public Map<String,Boolean> updateProgress(User user, boolean isCorrect, String activeCategory) {
-        Map<String, Boolean> levelUpOrDown = new HashMap<>();
-        levelUpOrDown.put("isLevelUp", false);
-        levelUpOrDown.put("isLevelDown", false);
+    public Map<String, Object> updateProgress(User user, boolean isCorrect, String activeCategory) {
+        Map<String, Object> progressStatus = new HashMap<>();
+        progressStatus.put("isLevelUp", false);
+        progressStatus.put("isLevelDown", false);
+
         Progress progress = progressRepository.findByUser(user);
         if (progress == null) {
             throw new IllegalStateException("Progress not found for user: " + user.getUsername());
@@ -146,12 +157,12 @@ public class QuestionService {
             successStreak++;
             if (successStreak >= REQUIRED_STREAK) {
                 progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
-                levelUpOrDown.put("isLevelUp",true);
+                progressStatus.put("isLevelUp",true);
                 successStreak = RESET_AFTER_LEVEL_UP;
             }
         } else {
             successStreak = RESET_AFTER_ERROR_ANSWER;
-
+            
 
             Map<String, Integer> weakPoints = progress.getWeakPoints();
             weakPoints.put(activeCategory, weakPoints.getOrDefault(activeCategory, 0) + 1);
@@ -164,7 +175,7 @@ public class QuestionService {
                 if (Math.random() < weaknessFactor) {
                     if (currentLevel > LEVEL_HIGH_THEN_ONE) {
                         progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
-                        levelUpOrDown.put("isLevelDown",true);
+                        progressStatus.put("isLevelDown",true);
                         weakPoints.put(activeCategory, 0);
                         progress.setWeakPoints(weakPoints);
                     }
@@ -176,7 +187,9 @@ public class QuestionService {
 
         progressRepository.save(progress);
 
-        return levelUpOrDown;
+        progressStatus.put("successStreaksByCategory", progress.getCategorySuccessStreak());
+        
+        return progressStatus;
     }
 
     public void saveQuestionHistory(User user, Question question, boolean isCorrect) {

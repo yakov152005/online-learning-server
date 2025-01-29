@@ -27,10 +27,59 @@ public class QuestionGenerator {
             case INVOICE_SERIES -> generateInvoiceSeries(difficulty);
             case QUADRATIC_EQUATION -> generateQuadraticEquation(difficulty);
             case EQUATION_LINE -> generateEquationOfTheLine(difficulty);
+            case DERIVATIVE -> generateDerivativeQuestion(difficulty);
             //case "fractions" -> generateFractionQuestion(difficulty);
             default -> throw new IllegalArgumentException("Unknown question type: " + category);
         };
     }
+
+    private static Question generateDerivativeQuestion(int difficulty) {
+        String content, solution, explanation;
+        switch (difficulty) {
+            case LEVEL_ONE:
+                int a = generateRandomNumber(difficulty);
+                int b = generateRandomNumber(difficulty);
+                content = "✦ Find the derivative of the function: *✦ f(x) = " + a + "x² + " + b + "x" +
+                          "*✦ Please write the full equation f'(x)=ax+b";
+                solution = "f'(x)=" + (2 * a) + "x+" + b;
+                explanation = String.join("\n",
+                        "✦ Step 1: For a term ax^n, the derivative is n ✱ ax^(n-1).",
+                        "*✦ Step 2: Derive " + a + "x² to get " + (2 * a) + "x.",
+                        "*✦ Step 3: Derive " + b + "x to get " + b + ".",
+                        "*✦ Step 4: Combine the results to get the final answer."
+                );
+                break;
+
+            case LEVEL_TWO:
+                int c = generateRandomNumber(difficulty);
+                int d = generateRandomNumber(difficulty);
+                content = "✦ Find the derivative of the function: *✦ f(x) = " + c + "x³ + " + d + "x²" +
+                "*✦ Please write the full equation f'(x)=ax²+bx";
+                solution = "f'(x)=" + (3 * c) + "x²+" + (2 * d) + "x";
+                explanation = String.join("\n",
+                        "✦ Step 1: For a term ax^n, the derivative is n ✱ ax^(n-1).",
+                        "*✦ Step 2: Derive " + c + "x³ to get " + (3 * c) + "x².",
+                        "*✦ Step 3: Derive " + d + "x² to get " + (2 * d) + "x.",
+                        "*✦ Step 4: Combine the results to get the final answer."
+                );
+                break;
+
+            case LEVEL_THREE:
+            default:
+                content = "✦ Find the derivative of the function: *✦ f(x) = sin(x) + cos(x)" +
+                "*✦ Please write the full equation f'(x)=?(x)+?(x)";
+                solution = "f'(x) = cos(x) - sin(x)";
+                explanation = String.join("\n",
+                        "✦ Step 1: The derivative of sin(x) is cos(x).",
+                        "*✦ Step 2: The derivative of cos(x) is -sin(x).",
+                        "*✦ Step 3: Combine the results to get the final answer."
+                );
+                break;
+        }
+
+        return new Question(DERIVATIVE, content, difficulty, solution, explanation);
+    }
+
 
     private static Question generateEquationOfTheLine(int difficulty) {
         int x1, y1, x2, y2, m;
@@ -518,15 +567,19 @@ public class QuestionGenerator {
 
 
     public static void main(String[] args) {
-        int count = 5;
-        boolean isValid = true;
-        while (isValid) {
-            System.out.println(generateSubtractionQuestion(4));
-            count--;
-            if (count == 0) {
-                isValid = false;
-            }
-        }
+//        int count = 5;
+//        boolean isValid = true;
+//        while (isValid) {
+//            System.out.println(generateSubtractionQuestion(4));
+//            count--;
+//            if (count == 0) {
+//                isValid = false;
+//            }
+//        }
+        Question question = generateDerivativeQuestion(1);
+        System.out.println("Question: " + question.getContent());
+        System.out.println("Solution: " + question.getSolution());
+        System.out.println("Explanation: " + question.getExplanation());
     }
 
 

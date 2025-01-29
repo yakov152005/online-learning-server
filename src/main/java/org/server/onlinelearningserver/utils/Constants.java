@@ -84,6 +84,7 @@ public class Constants {
         public static final String INVOICE_SERIES =  "invoiceSeries";
         public static final String QUADRATIC_EQUATION = "quadraticEquation";
         public static final String EQUATION_LINE = "equationOfTheLine";
+        public static final String DERIVATIVE = "derivative";
 
         public static final List<String> hebrewBoysNames = List.of("אורי", "יובל", "איתי", "נועם", "תומר");
         public static final List<String> hebrewGirlsNames = List.of("עדי", "נועה", "ליאן", "שילת", "קארין");
