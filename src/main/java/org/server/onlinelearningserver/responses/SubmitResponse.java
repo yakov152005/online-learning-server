@@ -12,6 +12,7 @@ public class SubmitResponse extends BasicResponse{
     private boolean levelDown;
     private String solution;
     private Map<String, Integer> successStreaksByCategory;
+    private int coins;
 
 
     public SubmitResponse(boolean success, String error, boolean levelUp) {
@@ -19,11 +20,12 @@ public class SubmitResponse extends BasicResponse{
         this.levelUp = levelUp;
     }
 
-    public SubmitResponse(boolean success, String error, boolean levelUp,boolean levelDown,String solution,Map<String, Integer> successStreaksByCategory) {
+    public SubmitResponse(boolean success, String error, boolean levelUp,boolean levelDown,String solution,Map<String, Integer> successStreaksByCategory, int coins) {
         super(success, error);
         this.levelUp = levelUp;
         this.levelDown = levelDown;
         this.solution = solution;
         this.successStreaksByCategory = successStreaksByCategory;
+        this.coins = coins;
     }
 }

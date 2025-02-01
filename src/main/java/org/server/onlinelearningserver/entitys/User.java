@@ -24,6 +24,8 @@ public class User {
     private String salt;
     @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
+    private int coinsCredits = 0;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Progress progress;

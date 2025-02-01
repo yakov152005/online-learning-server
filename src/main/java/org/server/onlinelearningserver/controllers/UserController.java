@@ -3,6 +3,7 @@ package org.server.onlinelearningserver.controllers;
 import org.server.onlinelearningserver.entitys.User;
 import org.server.onlinelearningserver.responses.BasicResponse;
 import org.server.onlinelearningserver.responses.LoginResponse;
+import org.server.onlinelearningserver.responses.UserCoinsResponse;
 import org.server.onlinelearningserver.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,11 @@ public class UserController {
     @PostMapping("/login-user")
     public LoginResponse loginUser(@RequestBody Map<String,String> loginDetails){
         return userService.loginUser(loginDetails);
+    }
+
+    @GetMapping("/get-user-details")
+    public UserCoinsResponse getCoins(@RequestParam String username){
+        return userService.getCoins(username);
     }
 
 

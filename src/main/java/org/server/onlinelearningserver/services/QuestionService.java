@@ -18,6 +18,7 @@ import org.server.onlinelearningserver.responses.SubmitResponse;
 import org.server.onlinelearningserver.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Date;
@@ -120,6 +121,7 @@ public class QuestionService {
         boolean isLevelUp = (boolean) progressStatus.get("isLevelUp");
         boolean isLevelDown = (boolean) progressStatus.get("isLevelDown");
         Map<String, Integer> successStreaksByCategory = (Map<String, Integer>) progressStatus.get("successStreaksByCategory");
+        int coinsCredits = user.getCoinsCredits();
 
         return new SubmitResponse(
                 isCorrect,
@@ -127,12 +129,14 @@ public class QuestionService {
                 isLevelUp,
                 isLevelDown,
                 isCorrect ? "" : question.getSolution(),
-                successStreaksByCategory
+                successStreaksByCategory,
+                coinsCredits
         );
     }
 
 
 
+    @Transactional
     public Map<String, Object> updateProgress(User user, boolean isCorrect, String activeCategory) {
         Map<String, Object> progressStatus = new HashMap<>();
         progressStatus.put("isLevelUp", false);
@@ -145,6 +149,8 @@ public class QuestionService {
 
         int currentLevel = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
         int successStreak = progress.getCategorySuccessStreak().getOrDefault(activeCategory, 0);
+        int coinsBefore = user.getCoinsCredits(); // כדי לבדוק אם היה שינוי
+
 
         // בדיקה האם המשתמש היה ברמה הזו בעבר
         int REQUIRED_STREAK = FOR_LEVEL_UP; // לא היה ברמה הבאה
@@ -152,12 +158,17 @@ public class QuestionService {
             REQUIRED_STREAK = USER_WAS_AT_THE_NEXT_LEVEL; // היה ברמה הבאה אז יותר קל לעלות אלייה כדי שלא ישתעמם
         }
 
+        boolean levelUp = false;
+        boolean levelDown = false;
 
         if (isCorrect) {
             successStreak++;
             if (successStreak >= REQUIRED_STREAK) {
                 progress.getCategoryProgress().put(activeCategory, currentLevel + 1);
-                progressStatus.put("isLevelUp",true);
+                levelUp = true;
+
+                user.setCoinsCredits(user.getCoinsCredits() + 1);
+
                 successStreak = RESET_AFTER_LEVEL_UP;
             }
         } else {
@@ -175,7 +186,7 @@ public class QuestionService {
                 if (Math.random() < weaknessFactor) {
                     if (currentLevel > LEVEL_HIGH_THEN_ONE) {
                         progress.getCategoryProgress().put(activeCategory, currentLevel - 1);
-                        progressStatus.put("isLevelDown",true);
+                        levelDown = true;
                         weakPoints.put(activeCategory, 0);
                         progress.setWeakPoints(weakPoints);
                     }
@@ -185,8 +196,13 @@ public class QuestionService {
 
         progress.getCategorySuccessStreak().put(activeCategory, successStreak);
 
+        if (levelUp || levelDown || user.getCoinsCredits() != coinsBefore) {
+            userRepository.save(user);
+        }
         progressRepository.save(progress);
 
+        progressStatus.put("isLevelUp", levelUp);
+        progressStatus.put("isLevelDown", levelDown);
         progressStatus.put("successStreaksByCategory", progress.getCategorySuccessStreak());
         
         return progressStatus;

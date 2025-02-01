@@ -6,10 +6,12 @@ import org.server.onlinelearningserver.repositoris.SessionRepository;
 import org.server.onlinelearningserver.repositoris.UserRepository;
 import org.server.onlinelearningserver.responses.BasicResponse;
 import org.server.onlinelearningserver.responses.LoginResponse;
+import org.server.onlinelearningserver.responses.UserCoinsResponse;
 import org.server.onlinelearningserver.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -91,5 +93,15 @@ public class UserService {
         return new LoginResponse(false, "Email Or Password incorrect.", null);
     }
 
+    public UserCoinsResponse getCoins(@RequestParam String username){
+        User user = userRepository.findByUsername(username);
+        if (user == null){
+            return new UserCoinsResponse(false,"This User is not exist.");
+        }
+
+        int coinsCredits = user.getCoinsCredits();
+
+        return new UserCoinsResponse(true,"User coins sends.",coinsCredits);
+    }
 
 }
