@@ -84,6 +84,7 @@ public class QuestionService {
         questionRepository.save(question);
 
         int successStreak = progress.getCategorySuccessStreak().getOrDefault(activeCategory, 0);
+        int currentLevel = progress.getCategoryProgress().getOrDefault(activeCategory, 1);
 
 
         QuestionDto questionDto = new QuestionDto(
@@ -95,7 +96,7 @@ public class QuestionService {
                 question.getExplanation()
         );
 
-        return new QuestionResponse(true, "Question sent successfully.", questionDto,successStreak);
+        return new QuestionResponse(true, "Question sent successfully.", questionDto,successStreak,currentLevel);
     }
 
 
@@ -103,12 +104,12 @@ public class QuestionService {
     public SubmitResponse submitAnswer(long questionId, String userAnswer, String username){
         User user = userRepository.findByUsername(username);
         if (user == null){
-            return new SubmitResponse(false,"User not found.",false);
+            return new SubmitResponse(false,"User not found.");
         }
 
         Question question = questionRepository.findById(questionId).orElse(null);
         if (question == null){
-            return new SubmitResponse(false,"Question not found.",false);
+            return new SubmitResponse(false,"Question not found.");
         }
 
 
@@ -122,6 +123,7 @@ public class QuestionService {
         boolean isLevelDown = (boolean) progressStatus.get("isLevelDown");
         Map<String, Integer> successStreaksByCategory = (Map<String, Integer>) progressStatus.get("successStreaksByCategory");
         int coinsCredits = user.getCoinsCredits();
+        Map<String, Integer> currentLevelByCategory = (Map<String, Integer>) progressStatus.get("currentLevelByCategory");
 
         return new SubmitResponse(
                 isCorrect,
@@ -130,13 +132,12 @@ public class QuestionService {
                 isLevelDown,
                 isCorrect ? "" : question.getSolution(),
                 successStreaksByCategory,
-                coinsCredits
+                coinsCredits,
+                currentLevelByCategory
         );
     }
 
 
-
-    @Transactional
     public Map<String, Object> updateProgress(User user, boolean isCorrect, String activeCategory) {
         Map<String, Object> progressStatus = new HashMap<>();
         progressStatus.put("isLevelUp", false);
@@ -204,7 +205,8 @@ public class QuestionService {
         progressStatus.put("isLevelUp", levelUp);
         progressStatus.put("isLevelDown", levelDown);
         progressStatus.put("successStreaksByCategory", progress.getCategorySuccessStreak());
-        
+        progressStatus.put("currentLevelByCategory", progress.getCategoryProgress());
+
         return progressStatus;
     }
 
@@ -311,8 +313,8 @@ public class QuestionService {
         double totalSuccessRate =  ( (totalCorrect / (double) totalAnswers) * 100);
 
         return new DashboardResponse(true,
-                "All details send."
-                ,successStreaks,
+                "All details send.",
+                successStreaks,
                 openQuestions,
                 questionAnsweredIncorrectly,
                 weakPoints,

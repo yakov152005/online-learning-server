@@ -33,12 +33,25 @@ public class UserController {
         return userService.loginUser(loginDetails);
     }
 
-    @GetMapping("/get-user-details")
+    @PostMapping("/change-password")
+    public BasicResponse changePassword(@RequestBody Map<String, String> changePasswordDetails) {
+        return userService.changePassword(changePasswordDetails);
+    }
+
+    @GetMapping("/reset-password/{email}&{username}")
+    public BasicResponse resetPasswordForThisUser(@PathVariable String email, @PathVariable String username) {
+        return userService.resetPasswordForThisUser(email,username);
+    }
+
+    @PostMapping("/confirm-reset-password")
+    public BasicResponse confirmResetPassword(@RequestParam String token){
+        System.out.println(token + " token");
+        return userService.confirmPasswordReset(token);
+    }
+
+    @GetMapping("/get-user-coins")
     public UserCoinsResponse getCoins(@RequestParam String username){
         return userService.getCoins(username);
     }
-
-
-
 
 }

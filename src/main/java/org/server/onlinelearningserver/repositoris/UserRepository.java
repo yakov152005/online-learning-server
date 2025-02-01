@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
+    User findByEmailIgnoreCase(String email);
+
     @Query("SELECT u FROM User u WHERE u.username = :username")
     User findByUsername(@Param("username") String username);
 
@@ -20,4 +22,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("SELECT u FROM User u WHERE u NOT IN " +
            "(SELECT s.user FROM Session s WHERE s.lastActivity >= :lastWeek)")
     List<User> findUsersNotLoggedInLastWeek(@Param("lastWeek") Date lastWeek);
+
+    @Query("SELECT u FROM User u WHERE u.resetToken = :token")
+    User findByResetToken(@Param("token") String token);
+
 }

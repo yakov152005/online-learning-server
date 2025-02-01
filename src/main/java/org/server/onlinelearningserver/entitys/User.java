@@ -3,6 +3,7 @@ package org.server.onlinelearningserver.entitys;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,11 @@ public class User {
     private String email;
     @Column(nullable = false)
     private int coinsCredits = 0;
+
+    @Column(nullable = true)
+    private String resetToken; // טוקן איפוס סיסמה
+    @Column(nullable = true)
+    private LocalDateTime tokenExpiryDate;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Progress progress;

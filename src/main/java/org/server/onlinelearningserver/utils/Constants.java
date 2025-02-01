@@ -56,8 +56,8 @@ public class Constants {
         public static final int LEVEL_FIVE = 5;
         public static final int LEVEL_SIX = 6;
 
-        public static final int FOR_LEVEL_UP = 3;
-        public static final int USER_WAS_AT_THE_NEXT_LEVEL = 1;
+        public static final int FOR_LEVEL_UP = 10;
+        public static final int USER_WAS_AT_THE_NEXT_LEVEL = 5;
 
         public static final int RESET_AFTER_LEVEL_UP = 0;
         public static final int RESET_AFTER_ERROR_ANSWER = 0;
