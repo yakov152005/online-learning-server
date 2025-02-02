@@ -93,7 +93,8 @@ public class QuestionService {
                 question.getContent(),
                 question.getDifficulty(),
                 question.getSolution(),
-                question.getExplanation()
+                question.getExplanation(),
+                question.getSteps()
         );
 
         return new QuestionResponse(true, "Question sent successfully.", questionDto,successStreak,currentLevel);

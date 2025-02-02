@@ -45,7 +45,6 @@ public class UserController {
 
     @PostMapping("/confirm-reset-password")
     public BasicResponse confirmResetPassword(@RequestParam String token){
-        System.out.println(token + " token");
         return userService.confirmPasswordReset(token);
     }
 
@@ -54,4 +53,9 @@ public class UserController {
         return userService.getCoins(username);
     }
 
+
+    @PostMapping("/update-coins/{username}&={coinsCredits}")
+    public BasicResponse updateCoins(@PathVariable String username, @PathVariable int coinsCredits){
+        return userService.updateCoins(username,coinsCredits);
+    }
 }

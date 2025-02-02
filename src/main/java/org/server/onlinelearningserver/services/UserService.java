@@ -213,5 +213,16 @@ public class UserService {
         return new UserCoinsResponse(true,"User coins sends.",coinsCredits);
     }
 
+    public BasicResponse updateCoins(@PathVariable String username, @PathVariable int coinsCredits){
+        User user = userRepository.findByUsername(username);
+        if (user == null){
+            return new UserCoinsResponse(false,"This User is not exist.");
+        }
+
+        user.setCoinsCredits(coinsCredits);
+        userRepository.save(user);
+        return new BasicResponse(true,"Update Coins Successfully");
+    }
+
 
 }
