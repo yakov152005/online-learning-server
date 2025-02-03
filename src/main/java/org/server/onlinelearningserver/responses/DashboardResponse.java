@@ -1,54 +1,20 @@
 package org.server.onlinelearningserver.responses;
-
 import lombok.Getter;
 import lombok.Setter;
-import org.server.onlinelearningserver.dtos.CategoryProgressDto;
-import org.server.onlinelearningserver.dtos.CategorySuccessStreakDto;
-import org.server.onlinelearningserver.dtos.QuestionDto;
-import org.server.onlinelearningserver.dtos.WeakPointDto;
+import org.server.onlinelearningserver.dtos.DashboardDto;
 
-import java.util.List;
-import java.util.Map;
-
-@Setter
 @Getter
+@Setter
 public class DashboardResponse extends BasicResponse {
-    private List<CategorySuccessStreakDto> successStreak;
-    private List<QuestionDto> openQuestions;
-    private List<QuestionDto> questionsAnsweredIncorrectly;
-    private List<WeakPointDto> weakPoints;
-    private List<CategoryProgressDto> currentLevels;
-    private Map<String, Integer> correctAnswersPerCategory;
-    private Map<String, Integer> incorrectAnswersPerCategory;
-    Map<String, Double> successRate;
-    private int totalCorrectAnswers;
-    private int totalIncorrectAnswers;
-    private int totalUnansweredQuestion;
-    private double totalSuccessRate;
+    private DashboardDto dashboardDto;
 
-    public DashboardResponse(boolean success, String error, List<CategorySuccessStreakDto> successStreak,
-                             List<QuestionDto> openQuestions, List<QuestionDto> questionsAnsweredIncorrectly,
-                             List<WeakPointDto> weakPoints,
-                             List<CategoryProgressDto> currentLevels, Map<String, Integer> correctAnswersPerCategory,
-                             Map<String, Integer> incorrectAnswersPerCategory, Map<String, Double> successRate,
-                             int totalCorrectAnswers, int totalIncorrectAnswers,int totalUnansweredQuestion,double totalSuccessRate) {
+
+    public DashboardResponse(boolean success, String error, DashboardDto dashboardDto) {
         super(success, error);
-        this.successStreak = successStreak;
-        this.openQuestions = openQuestions;
-        this.questionsAnsweredIncorrectly = questionsAnsweredIncorrectly;
-        this.weakPoints = weakPoints;
-        this.currentLevels = currentLevels;
-        this.correctAnswersPerCategory = correctAnswersPerCategory;
-        this.incorrectAnswersPerCategory = incorrectAnswersPerCategory;
-        this.successRate = successRate;
-        this.totalCorrectAnswers = totalCorrectAnswers;
-        this.totalIncorrectAnswers = totalIncorrectAnswers;
-        this.totalUnansweredQuestion = totalUnansweredQuestion;
-        this.totalSuccessRate = totalSuccessRate;
+        this.dashboardDto = dashboardDto;
     }
 
     public DashboardResponse(boolean success, String error) {
         super(success, error);
     }
-
 }

@@ -1,30 +1,18 @@
 package org.server.onlinelearningserver.services;
 
-import org.server.onlinelearningserver.dtos.CategoryProgressDto;
-import org.server.onlinelearningserver.dtos.CategorySuccessStreakDto;
-import org.server.onlinelearningserver.dtos.QuestionDto;
-import org.server.onlinelearningserver.dtos.WeakPointDto;
-import org.server.onlinelearningserver.entitys.Progress;
-import org.server.onlinelearningserver.entitys.Question;
-import org.server.onlinelearningserver.entitys.QuestionHistory;
-import org.server.onlinelearningserver.entitys.User;
-import org.server.onlinelearningserver.repositoris.ProgressRepository;
-import org.server.onlinelearningserver.repositoris.QuestionHistoryRepository;
-import org.server.onlinelearningserver.repositoris.QuestionRepository;
-import org.server.onlinelearningserver.repositoris.UserRepository;
+import org.server.onlinelearningserver.dtos.*;
+import org.server.onlinelearningserver.entitys.*;
+import org.server.onlinelearningserver.repositoris.*;
 import org.server.onlinelearningserver.responses.DashboardResponse;
 import org.server.onlinelearningserver.responses.QuestionResponse;
 import org.server.onlinelearningserver.responses.SubmitResponse;
 import org.server.onlinelearningserver.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 import static org.server.onlinelearningserver.utils.Constants.Question.*;
 
@@ -36,17 +24,19 @@ public class QuestionService {
     private final QuestionGenerator questionGenerator;
     private final UserRepository userRepository;
     private final QuestionRepository questionRepository;
+    private final WeeklyStatsRepository weeklyStatsRepository;
 
     @Autowired
     public QuestionService(QuestionHistoryRepository questionHistoryRepository, ProgressRepository progressRepository
                            , QuestionGenerator questionGenerator, UserRepository userRepository,
-                           QuestionRepository questionRepository
+                           QuestionRepository questionRepository,WeeklyStatsRepository weeklyStatsRepository
     ){
         this.questionHistoryRepository = questionHistoryRepository;
         this.progressRepository = progressRepository;
         this.questionGenerator = questionGenerator;
         this.userRepository = userRepository;
         this.questionRepository = questionRepository;
+        this.weeklyStatsRepository = weeklyStatsRepository;
     }
 
 
@@ -270,13 +260,9 @@ public class QuestionService {
 
 
         List<QuestionDto> openQuestions = getUnansweredQuestions(user);
-
         List<QuestionDto> questionAnsweredIncorrectly = getQuestionsAnsweredIncorrectly(user);
-
         List<WeakPointDto> weakPoints = progressRepository.findWeakPointsByUser(user);
-
         List<CategorySuccessStreakDto> successStreaks = progressRepository.findSuccessStreakByUser(user);
-
         List<CategoryProgressDto> currentLevels = progressRepository.findCategoryProgressByUser(user);
 
 
@@ -309,12 +295,19 @@ public class QuestionService {
         }
 
         int totalUnanswered = openQuestions.size();
-
         int totalAnswers = totalCorrect + totalIncorrect;
-        double totalSuccessRate =  ( (totalCorrect / (double) totalAnswers) * 100);
 
-        return new DashboardResponse(true,
-                "All details send.",
+        double totalSuccessRate = 0;
+        if (totalAnswers > 0) {
+            totalSuccessRate = ( (totalCorrect / (double) totalAnswers) * 100);
+        }
+
+
+        saveWeeklyStats(user, totalSuccessRate);
+
+
+
+        DashboardDto dashboardDto = new DashboardDto(
                 successStreaks,
                 openQuestions,
                 questionAnsweredIncorrectly,
@@ -328,7 +321,57 @@ public class QuestionService {
                 totalUnanswered,
                 totalSuccessRate
         );
+
+        return new DashboardResponse(true,
+                "All details send.",
+                dashboardDto
+        );
     }
+
+
+
+    private void saveWeeklyStats(User user, double totalSuccessRate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+        Date weekStart = calendar.getTime();
+
+
+        WeeklyStats latestStats = weeklyStatsRepository.findLatestByUser(user).stream().findFirst().orElse(null);
+
+
+        if (latestStats == null) {
+            WeeklyStats firstStats = new WeeklyStats();
+            firstStats.setUser(user);
+            firstStats.setCurrentTotalSuccessRate(totalSuccessRate);
+            firstStats.setPreviousTotalSuccessRate(0.0);
+            firstStats.setRecordedAt(new Date());
+            firstStats.setPreviousWeekDate(null);
+            weeklyStatsRepository.save(firstStats);
+            System.out.println("✅ נתון ראשוני נשמר למשתמש: " + user.getUsername());
+            return;
+        }
+
+
+        if (latestStats.getRecordedAt().after(weekStart)) {
+            System.out.println("⏳ נתונים כבר נשמרו השבוע, אין צורך לשמור שוב.");
+            return;
+        }
+
+
+        double previousSuccessRate = latestStats.getCurrentTotalSuccessRate();
+
+        latestStats.setPreviousTotalSuccessRate(previousSuccessRate);
+        latestStats.setCurrentTotalSuccessRate(totalSuccessRate);
+        latestStats.setPreviousWeekDate(latestStats.getRecordedAt());
+        latestStats.setRecordedAt(new Date());
+
+        weeklyStatsRepository.save(latestStats);
+
+        System.out.println("✅ נתון שבועי עודכן למשתמש: " + user.getUsername());
+    }
+
+
+
 
 
 }
