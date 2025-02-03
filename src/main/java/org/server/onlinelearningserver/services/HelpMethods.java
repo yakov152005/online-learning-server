@@ -2,12 +2,14 @@ package org.server.onlinelearningserver.services;
 
 import org.server.onlinelearningserver.entitys.User;
 import org.server.onlinelearningserver.repositoris.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static org.server.onlinelearningserver.utils.Constants.Errors.*;
 import static org.server.onlinelearningserver.utils.Constants.HelpMethodConstants.*;
 
+@Service
 public class HelpMethods {
 
 

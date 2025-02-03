@@ -6,6 +6,7 @@ import org.server.onlinelearningserver.repositoris.*;
 import org.server.onlinelearningserver.responses.DashboardResponse;
 import org.server.onlinelearningserver.responses.QuestionResponse;
 import org.server.onlinelearningserver.responses.SubmitResponse;
+import org.server.onlinelearningserver.services.generator.QuestionGenerator;
 import org.server.onlinelearningserver.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -368,9 +369,6 @@ public class QuestionService {
 
         System.out.println("✅ נתון שבועי עודכן למשתמש: " + user.getUsername());
     }
-
-
-
 
 
 }
