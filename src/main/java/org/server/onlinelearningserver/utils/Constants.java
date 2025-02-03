@@ -74,6 +74,13 @@ public class Constants {
         public static final String findMFormula = "m = ((y₂ - y₁) / (x₂ - x₁))";
         public static final String mathFormula = "y=mx+b";
         public static final String deltaFormula = "Δ = b² - 4ac";
+        public static final String afterDerivativeFormula = "f'(x)=ax+b";
+        public static final String afterDerivativeFormula2 = "f'(x)=ax²+bx";
+        public static final String roleMultiDerivative = "(fg)' = f' g + fg'";
+        public static final String afterDerivativeAXFormula = "n ✱ ax^(n-1)";
+        public static final String chainRule = "d/dx f(g(x)) = f'(g(x)) ✱ g'(x)";
+        public static final String dishRule = "d/dx (f/g) = (f'g - fg') / g²";
+
 
 
         public static final String ADD = "addition";
@@ -91,6 +98,10 @@ public class Constants {
         public static final List<String> items1Names = List.of( "על המדף","בתיק", "בקופסה");
         public static final List<String> items2Names = List.of( "ספרים","מחברות","עפרונות");
         public static final List<String> fruitNames = List.of("אבטיחים", "בננות", "קלמנטינות", "תפוחים","תפוזים");
+        public static final List<String> drinkNames = List.of("מים", "מיץ תפוזים", "תה", "קפה", "חלב", "קולה", "לימונדה", "שוקו");
+        public static final List<String> productNames = List.of("לחם", "חלב", "חמאה", "שוקולד", "פסטה", "גבינה", "דבש", "קורנפלקס", "אורז", "מלפפונים");
+        public static final List<String> storeNames = List.of("סופרמרקט", "מכולת", "שוק", "קונדיטוריה", "מאפייה", "חנות טבע", "קיוסק", "מרכז קניות");
+
         public static final char[] OPERATORS = {'+','-','✱','/' };
     }
 }

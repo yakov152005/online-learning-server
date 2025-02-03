@@ -35,50 +35,122 @@ public class QuestionGenerator {
     }
 
     private static Question generateDerivativeQuestion(int difficulty) {
+        int a = generateRandomNumber(difficulty); // מקדם ל x²
+        int b = generateRandomNumber(difficulty); // מקדם ל x
+        int c = generateRandomNumber(difficulty); // מספר חופשי
+        int d = generateRandomNumber(difficulty); // מקדם במחנה (x + d)
         String content, solution, explanation;
+        List<SolutionStep> steps = new ArrayList<>();
+
+
         switch (difficulty) {
             case LEVEL_ONE:
-                int a = generateRandomNumber(difficulty);
-                int b = generateRandomNumber(difficulty);
                 content = "✦ Find the derivative of the function: *✦ f(x) = " + a + "x² + " + b + "x" +
-                          "*✦ Please write the full equation f'(x)=ax+b";
+                          "*✦ Please write the full equation "+ afterDerivativeFormula;
                 solution = "f'(x)=" + (2 * a) + "x+" + b;
+
+                steps.add(new SolutionStep(1, "חוק הנגזרת של חזקה: נגזרת של axⁿ היא n ✱ axⁿ⁻¹", "d/dx [axⁿ] = n ✱ axⁿ⁻¹"));
+                steps.add(new SolutionStep(2, "חשב נגזרת של " + a + "x²", "d/dx [" + a + "x²] = " + (2 * a) + "x"));
+                steps.add(new SolutionStep(3, "חשב נגזרת של " + b + "x", "d/dx [" + b + "x] = " + b));
+                steps.add(new SolutionStep(4, "שלב את הנגזרות יחד", "f'(x)=" + (2 * a) + "x+" + b));
+
                 explanation = String.join("\n",
-                        "✦ Step 1: For a term ax^n, the derivative is n ✱ ax^(n-1).",
-                        "*✦ Step 2: Derive " + a + "x² to get " + (2 * a) + "x.",
-                        "*✦ Step 3: Derive " + b + "x to get " + b + ".",
-                        "*✦ Step 4: Combine the results to get the final answer."
+                        "✦ Step 1:  השתמש בנוסחה הכללית לנגזרת של איקס בחזקה כלשהי. " + afterDerivativeAXFormula,
+                        "*✦ Step 2: מצא את נגזרת הביטוי הראשון.",
+                        "*✦ Step 3: מצא את נגזרת הביטוי השני.",
+                        "*✦ Step 4: חבר את כל התוצאות לקבלת הנגזרת הסופית.  " + afterDerivativeFormula
                 );
                 break;
 
             case LEVEL_TWO:
-                int c = generateRandomNumber(difficulty);
-                int d = generateRandomNumber(difficulty);
                 content = "✦ Find the derivative of the function: *✦ f(x) = " + c + "x³ + " + d + "x²" +
-                "*✦ Please write the full equation f'(x)=ax²+bx";
+                "*✦ Please write the full equation " + afterDerivativeFormula2;
                 solution = "f'(x)=" + (3 * c) + "x²+" + (2 * d) + "x";
+
+                steps.add(new SolutionStep(1, "חוק הנגזרת של חזקה: d/dx [axⁿ] = n * axⁿ⁻¹", ""));
+                steps.add(new SolutionStep(2, "חשב נגזרת של " + c + "x³", "d/dx [" + c + "x³] = " + (3 * c) + "x²"));
+                steps.add(new SolutionStep(3, "חשב נגזרת של " + d + "x²", "d/dx [" + d + "x²] = " + (2 * d) + "x"));
+                steps.add(new SolutionStep(4, "שלב את הנגזרות יחד", solution));
+
                 explanation = String.join("\n",
-                        "✦ Step 1: For a term ax^n, the derivative is n ✱ ax^(n-1).",
-                        "*✦ Step 2: Derive " + c + "x³ to get " + (3 * c) + "x².",
-                        "*✦ Step 3: Derive " + d + "x² to get " + (2 * d) + "x.",
-                        "*✦ Step 4: Combine the results to get the final answer."
+                        "✦ Step 1:  השתמש בנוסחה הכללית לנגזרת של איקס בחזקה כלשהי. " + afterDerivativeAXFormula,
+                        "*✦ Step 2: מצא את נגזרת הביטוי הראשון.",
+                        "*✦ Step 3: מצא את נגזרת הביטוי השני.",
+                        "*✦ Step 4: חבר את כל התוצאות לקבלת הנגזרת הסופית.  " + afterDerivativeFormula2
                 );
                 break;
 
             case LEVEL_THREE:
-            default:
-                content = "✦ Find the derivative of the function: *✦ f(x) = sin(x) + cos(x)" +
-                "*✦ Please write the full equation f'(x)=?(x)+?(x)";
-                solution = "f'(x) = cos(x) - sin(x)";
+                int p = generateRandomNumber(difficulty);
+                content = "✦ מצא את הנגזרת של הפונקציה:"
+                          + "*✦ f(x) = " + p + "x sin(x)"
+                          + "*✦ Please write the full equation: f'(x) = ?";
+
+                solution = "f'(x)=" + p + "cos(x)+" + p + "x" +"cos(x)";
+
+                steps.add(new SolutionStep(1, "השתמש בכלל המכפלה: " + roleMultiDerivative,
+                        "d/dx [ " + p + "x sin(x) ] = ","= d/dx [ \" + p + \"x ] sin(x) + \" + p + \"x d/dx [ sin(x) ]"));
+                steps.add(new SolutionStep(2, "חשב את נגזרות כל אחד מהאיברים",
+                        "d/dx [" + p + "x] = ", p + ", d/dx [sin(x)] = cos(x)"));
+                steps.add(new SolutionStep(3, "הציב בתוצאה",
+                        solution));
+
                 explanation = String.join("\n",
-                        "✦ Step 1: The derivative of sin(x) is cos(x).",
-                        "*✦ Step 2: The derivative of cos(x) is -sin(x).",
-                        "*✦ Step 3: Combine the results to get the final answer."
+                        "✦ step 1: השתמש בכלל המכפלה." + roleMultiDerivative,
+                        "*✦ step 2: חשב את נגזרת כל פונקציה בנפרד.",
+                        "*✦ step 3: הצב את הנגזרות בנוסחה כדי לקבל את התוצאה הסופית."
                 );
                 break;
+            case LEVEL_FOUR:
+                int coef = generateRandomNumber(difficulty);
+                content = "✦ מצא את הנגזרת של הפונקציה: "
+                          + "*✦ f(x) = sin(" + coef + "x²)"
+                          + "*✦ Please write the full equation: f'(x) = ?";
+
+                solution = "f'(x)=" + (2 * coef) + "x" + "cos(" + coef + "x²)";
+
+                steps.add(new SolutionStep(1, "השתמש בכלל השרשרת: " + chainRule,
+                        "d/dx [sin(" + coef + "x²)] = cos(" + coef + "x²) * d/dx [" + coef + "x²]"));
+
+                steps.add(new SolutionStep(2, "חשב את נגזרת הפונקציה הפנימית g(x) = " + coef + "x²",
+                        "d/dx [" + coef + "x²] = " + (2 * coef) + "x"));
+
+                steps.add(new SolutionStep(3, "שלב את התוצאות יחד",
+                        solution));
+
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בכלל השרשרת לנגזרת של פונקציה מורכבת: " + chainRule,
+                        "*✦ step 2: חשב את נגזרת הפונקציה הפנימית.",
+                        "*✦ step 3: הצב את הערכים כדי לקבל את הפונקציה הנגזרת."
+                );
+                break;
+            case LEVEL_FIVE:
+            default:
+                content = "✦ מצא את הנגזרת של הפונקציה: "
+                          + "*✦ f(x) = (" + a + "x² + " + b + "x + " + c + ") / (x + " + d + ")"
+                          + "*✦ Please write the full equation: f'(x) = ?";
+
+                solution = "f'(x)=[(" + (2 * a) + "x+" + b + ")✱(x+ " + d +")-(" + a + "x²+" + b + "x+" + c + ")✱1]/(x+" + d + ")²";
+
+                steps.add(new SolutionStep(1, "השתמש בכלל המנה: " + dishRule,
+                        "d/dx [(" + a + "x² + " + b + "x + " + c + ") / (x + " + d + ")] = [(x + " + d + ") d/dx [" + a + "x² + " + b + "x + " + c + "] - (" + a + "x² + " + b + "x + " + c + ") d/dx [x + " + d + "]] / (x + " + d + ")²"));
+
+                steps.add(new SolutionStep(2, "חשב את נגזרות הפונקציות",
+                        "d/dx [" + a + "x² + " + b + "x + " + c + "] = " + (2 * a) + "x + " + b + ", d/dx [x + " + d + "] = 1"));
+
+                steps.add(new SolutionStep(3, "הצב את התוצאות בנוסחה",
+                        solution));
+
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בכלל המנה." + dishRule,
+                        "*✦ step 2: חשב את נגזרות הפונקציות במונה ובמחנה.",
+                        "*✦ step 3: הצב בנוסחה וקבל את התוצאה."
+                );
+                break;
+
         }
 
-        return new Question(DERIVATIVE, content, difficulty, solution, explanation);
+        return new Question(DERIVATIVE, content, difficulty, solution, explanation,steps);
     }
 
 
@@ -96,10 +168,23 @@ public class QuestionGenerator {
         String result = "y=" + m + "x" + (b >= 0 ? "+" + b : "-" + Math.abs(b));
 
         String content, solution, explanation;
+        List<SolutionStep> steps = new ArrayList<>();
+
+
         switch (difficulty) {
             case LEVEL_ONE:
                 content = "x₁,y₁ = (" + x1 + "," + y1 + "),  x₂,y₂ = (" + x2 + "," + y2 + ")  *✦ m = ?";
                 solution = String.valueOf(m);
+
+                steps.add(new SolutionStep(1, "השתמש בנוסחת השיפוע:",
+                        findMFormula));
+                steps.add(new SolutionStep(2, "הצב את הערכים הנתונים:",
+                        "m = (" + y2 + " - " + y1 + ") / (" + x2 + " - " + x1 + ")"));
+                steps.add(new SolutionStep(3, "חשב את התוצאה:",
+                        "m = " + (y2 - y1) + " / " + (x2 - x1)));
+                steps.add(new SolutionStep(4, "בצע את החילוק ומצא את השיפוע:",
+                        "m = " + m));
+
                 explanation = String.join("\n",
                         "✦ step 1:הצב את הערכים הנתונים לפי הסדר במשוואת השיפוע : " + findMFormula,
                         "*✦ step 2: צמצם כל חלק בנפרד על ידי חיסור/חיבור התוצאה",
@@ -111,6 +196,21 @@ public class QuestionGenerator {
                 content = "x₁,y₁ = (" + x1 + "," + y1 + "),  m = " + m + " *✦ Find the " + mathFormula +
                           " *✦ Please write the full equation " + mathFormula;
                 solution = result;
+
+
+                steps.add(new SolutionStep(1, "השתמש במשוואת הישר:",
+                        mathFormula));
+                steps.add(new SolutionStep(2, "הצב את ערכי x₁, y₁ והשיפוע m כדי למצוא את b:",
+                        y1 + " = " + m + " * " + x1 + " + b"));
+                steps.add(new SolutionStep(3, "חשב את b על ידי העברת אגפים:",
+                        "b = " + y1 + " - (" + m + " * " + x1 + ")"));
+
+                steps.add(new SolutionStep(4, "מצא את b:",
+                        "b = " + b));
+
+                steps.add(new SolutionStep(5, "הרכב את משוואת הישר:",
+                        result));
+
                 explanation = String.join("\n",
                         "✦ step 1: הצב את הערכים במשוואת קו הישר: " + equationLineFormula,
                         "*✦ step 2: פתח סוגריים והעבר אגפים",
@@ -122,6 +222,22 @@ public class QuestionGenerator {
                 content = "x₁,y₁ = (" + x1 + "," + y1 + "), x₂,y₂ = (" + x2 + "," + y2 + ") *✦ Find the y=mx+b" +
                           " *✦ Please write the full equation y=mx+b";
                 solution = result;
+
+                steps.add(new SolutionStep(1, "השתמש בנוסחת השיפוע:",
+                        mathFormula));
+                steps.add(new SolutionStep(2, "הצב את הערכים הנתונים:",
+                        "m = (" + y2 + " - " + y1 + ") / (" + x2 + " - " + x1 + ")"));
+                steps.add(new SolutionStep(3, "חשב את התוצאה:",
+                        "m = " + m));
+                steps.add(new SolutionStep(4, "השתמש במשוואת הישר y = mx + b והצב את x₁, y₁ והמקדמים כדי למצוא את b:",
+                        y1 + " = " + m + " * " + x1 + " + b"));
+                steps.add(new SolutionStep(5, "חשב את b על ידי העברת אגפים:",
+                        "b = " + y1 + " - (" + m + " * " + x1 + ")"));
+                steps.add(new SolutionStep(6, "מצא את b:",
+                        "b = " + b));
+                steps.add(new SolutionStep(7, "הרכב את משוואת הישר:",
+                        result));
+
                 explanation = String.join("\n",
                         "✦ step 1: השתמש בנוסחא למציאת השיפוע : " + findMFormula,
                         "*✦ step 2: הצב את הערכים  במשוואת קו הישר: " + equationLineFormula,
@@ -131,7 +247,7 @@ public class QuestionGenerator {
                 break;
         }
 
-        return new Question(EQUATION_LINE, content, difficulty, solution, explanation);
+        return new Question(EQUATION_LINE, content, difficulty, solution, explanation,steps);
     }
 
 
@@ -141,12 +257,31 @@ public class QuestionGenerator {
         int a = generateRandomForQuadEquNumber(difficulty);
         int b = -a * (x1 + x2);
         int c = a * x1 * x2;
+
         String content, solution, explanation;
+        List<SolutionStep> steps = new ArrayList<>();
+
         switch (difficulty){
             case LEVEL_ONE:
-            default:
                 content = "A = " + a + ", B = " + b + ", C = " + c + " *✦ Find X₁,₂ and write down the largest X among them.";
                 solution = String.valueOf(Math.max(x1, x2));
+
+                steps.add(new SolutionStep(1, "השתמש בנוסחת השורשים:",
+                        "X₁,₂ = (-b ± √Δ) / 2a"));
+                steps.add(new SolutionStep(2, "חשב את הדיסקרימיננט (Δ):",
+                        "Δ = b² - 4ac = (" + b + ")² - 4 * (" + a + ") * (" + c + ")"));
+                int delta = (b * b) - (4 * a * c);
+                steps.add(new SolutionStep(3, "חשב את ערך הדיסקרימיננט:",
+                        "Δ = " + delta));
+                steps.add(new SolutionStep(4, "חשב את השורשים של המשוואה הריבועית:",
+                        "X₁ = (-" + b + " + √" + delta + ") / (2 * " + a + ")",
+                        "X₂ = (-" + b + " - √" + delta + ") / (2 * " + a + ")"));
+                steps.add(new SolutionStep(5, "חשב את ערכי השורשים:",
+                        "X₁ = " + x1,
+                        "X₂ = " + x2));
+                steps.add(new SolutionStep(6, "מצא את השורש הגדול ביותר:",
+                        "max(X₁, X₂) = " + Math.max(x1, x2)));
+
                 explanation = String.join("\n",
                         "✦ step 1: השתמש בנוסחת השורשים: " + quadraticFormula,
                         "*✦ step 2: חישוב הדלתא (Δ): " + deltaFormula,
@@ -154,8 +289,38 @@ public class QuestionGenerator {
                         "*✦ step 4: כתוב את השורש הגדול ביותר מביניהם"
                 );
                 break;
+            case LEVEL_TWO:
+            default:
+                content = "A = " + a + ", B = " + b + ", C = " + c + " *✦ מצא את נקודת הקיצון של הפונקציה.";
+                solution = "(" + (-b / (2 * a)) + "," + ((4 * a * c - (b * b)) / (4 * a)) + ")";
+
+                steps.add(new SolutionStep(1, "מצא את שיעור ה-X של נקודת הקיצון (קודקוד הפרבולה):",
+                        "Xv = -b / 2a = (-" + b + ") / (2 * " + a + ")"));
+
+                int xv = -b / (2 * a);
+                steps.add(new SolutionStep(2, "חשב את שיעור ה-X של נקודת הקיצון:",
+                        "Xv = " + xv));
+
+                steps.add(new SolutionStep(3, "מצא את שיעור ה-Y של נקודת הקיצון על ידי הצבת Xv בפונקציה:",
+                        "Yv = a * (Xv)^2 + b * Xv + c"));
+
+                int yv = (a * xv * xv) + (b * xv) + c;
+                steps.add(new SolutionStep(4, "חשב את שיעור ה-Y של נקודת הקיצון:",
+                        "Yv = " + yv));
+
+                steps.add(new SolutionStep(5, "מצא את נקודת הקיצון:",
+                        "(" + xv + "," + yv + ")"));
+
+                explanation = String.join("\n",
+                        "✦ step 1: השתמש בנוסחת קודקוד הפרבולה: Xv = -b / 2a",
+                        "*✦ step 2: הצב את הנתונים וחשב את ערך Xv.",
+                        "*✦ step 3: הצב את Xv בפונקציה כדי למצוא את Yv.",
+                        "*✦ step 4: מצא את נקודת הקיצון של הפרבולה: (Xv, Yv)."
+                );
+                break;
+
         }
-        return new Question(QUADRATIC_EQUATION,content,difficulty,solution,explanation);
+        return new Question(QUADRATIC_EQUATION,content,difficulty,solution,explanation,steps);
     }
 
     private static Question generateInvoiceSeries(int difficulty) {
@@ -418,13 +583,10 @@ public class QuestionGenerator {
 
                 steps.add(new SolutionStep(1, "העבר את כל הביטויים עם X לצד אחד ואת המספרים לצד השני",
                         num + "X + " + num2 + "X = " + result + " - " + a));
-
                 steps.add(new SolutionStep(2, "פשט את הביטוי – חבר מקדמים של X וחבר מספרים חופשיים",
                         (num + num2) + "X = " + (result - a)));
-
                 steps.add(new SolutionStep(3, "חלק את שני הצדדים במקדם של X כדי למצוא את X",
                         "X = " + (result - a) + " ÷ " + (num + num2)));
-
                 steps.add(new SolutionStep(4, "קבל את התוצאה הסופית", "X = " + solution));
 
 
@@ -520,6 +682,7 @@ public class QuestionGenerator {
                 b = a - result;
                 content = a + " ➖ " + "X" + " = " + b + " *✦ X = ?";
                 solution = String.valueOf(result);
+
                 steps.add(new SolutionStep(1, "העבר את האיבר הימני של המשוואה לאגף השני", a + " - X = " + b));
                 steps.add(new SolutionStep(2, "הוסף את X לצד ימין והעבר את המספר לאגף השני", "-X = " + (b - a)));
                 steps.add(new SolutionStep(3, "חלק את שני הצדדים ב-(-1) כדי לבטל את הסימן השלילי", "-X = " + (b - a) + "/(-1)" ));
@@ -541,10 +704,23 @@ public class QuestionGenerator {
         int a = generateRandomNumber(difficulty);
         int b = generateRandomNumber(difficulty);
         String content, solution, explanation;
+        List<SolutionStep> steps = new ArrayList<>();
+
+
         switch (difficulty) {
             case LEVEL_ONE:
                 content = a + " ✱ " + b + " = ?";
                 solution = String.valueOf(a * b);
+
+                steps.add(new SolutionStep(1, "זהה את שני המספרים שיש לכפול.",
+                        "כפול את " + a + " ב-" + b));
+
+                steps.add(new SolutionStep(2, "בצע את פעולת הכפל.",
+                        a + " ✱ " + b + " = " + (a * b)));
+
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית.",
+                        "התשובה היא: " + solution));
+
                 explanation = String.join("\n",
                         "✦ step 1: כדי לחשב את התרגיל הזה פשוט הכפל את המספר הראשון במספר השני ",
                         "*✦ step 2: " +  a + " ✱ " + b,
@@ -552,20 +728,52 @@ public class QuestionGenerator {
                 );
                 break;
             case LEVEL_TWO:
-            default:
                 int result = a * generateRandomNumberPow(difficulty);
                 b = result / a;
                 content = a + " ✱ " + "X" + " = " + result + " *X = ?";
                 solution = String.valueOf(b);
+
+                steps.add(new SolutionStep(1, "העבר את המספר שמשמאל לאיקס אגף.",
+                        a + "X = " + result + " ➝ X = " + result + " ÷ " + a));
+                steps.add(new SolutionStep(2, "בצע את פעולת החילוק כדי לבודד את X.",
+                        "X = " + (result / a)));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית של X.",
+                        "X = " + solution));
+
                 explanation = String.join("\n",
-                        "✦ step 1: כדי לחשב את התרגיל הזה העבר את המספר שמשמאל לאיקס אגף  ",
-                        "*✦ step 2: אחרי העברת האגף וודא שהחלפת את הסימן מ ✱ ל / אמור להראות ככה : X = " + result + " / " + a,
-                        "*✦ step 3: חלק את המספר ורשום את התשובה הסופית שיצאה לך במספרים"
+                        "✦ step 1: כדי למצוא את X, יש להעביר את המספר שמשמאל לאיקס לאגף השני.",
+                        "*✦ step 2: המרה של כפל לחילוק: X = " + result + " ÷ " + a,
+                        "*✦ step 3: בצע את החילוק וקבל את התוצאה."
                 );
                 break;
+            case LEVEL_THREE:
+            default:
+                int x = generateRandomNumber(difficulty);
+                int y = generateRandomNumber(difficulty);
+                int result2 = (a * x) + (b * y);
+
+                content = a + "X + " + b + "Y = " + result2 + " *✦ find X and Y *✦ Write the answer as X=? Y=? ";
+                solution = "X=" + x + " Y =" + y;
+
+                steps.add(new SolutionStep(1, "זהה את המשוואה ואת שני הנעלמים.",
+                        a + "X + " + b + "Y = " + result2));
+                steps.add(new SolutionStep(2, "מצא ערכים אפשריים עבור X ו-Y שמתאימים למשוואה.",
+                        "X = " + x + ", Y = " + y));
+                steps.add(new SolutionStep(3, "בדוק את ההצבה במשוואה.",
+                        a + "(" + x + ") + " + b + "(" + y + ") = " + result2));
+                steps.add(new SolutionStep(4, "אם התוצאה נכונה, רשום את הפתרון הסופי.",
+                        "X = " + x + ", Y = " + y));
+
+                explanation = String.join("\n",
+                        "✦ step 1: מצא שני ערכים שמתאימים למשוואה.",
+                        "*✦ step 2: הצב ערכים ל-איקס ו-וואי ובדוק שהם מספקים את המשוואה.",
+                        "*✦ step: אשר את הפתרון הסופי."
+                );
+                break;
+
         }
 
-        return new Question(MULTI, content, difficulty, solution, explanation);
+        return new Question(MULTI, content, difficulty, solution, explanation,steps);
     }
 
 
@@ -573,68 +781,142 @@ public class QuestionGenerator {
         int a = generateRandomNumber(difficulty);
         int b = generateRandomNumber(difficulty);
         int result = 0;
+
         String content, solution, explanation;
+        List<SolutionStep> steps = new ArrayList<>();
+
         switch (difficulty) {
             case LEVEL_ONE:
-            case LEVEL_TWO:
-                if (difficulty == LEVEL_ONE) {
-                    b *= a;
-                }
-                if (difficulty == LEVEL_TWO) {
-                    b = a * ((int) (Math.random() * Math.pow(4, difficulty)));
-                }
-
+                b *= a;
                 content = b + " ➗ " + a + " = ?";
                 solution = String.valueOf(b / a);
+
+                steps.add(new SolutionStep(1, "זהה את שני המספרים שיש לחלק.",
+                        "חלק את " + b + " ב-" + a));
+
+                steps.add(new SolutionStep(2, "בצע את פעולת החילוק.",
+                        b + " ➗ " + a + " = " + (b / a)));
+
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית.",
+                        "התשובה היא: " + solution));
+
                 explanation = String.join("\n",
-                        "✦ step 1: כדי לחשב את התרגיל הזה חלק את המספר הראשון במספר השני  ",
-                        "*✦ step 2: זה אמור להראות ככה: " + a + " / " + b,
-                        "*✦ step 3: רשום את התשובה הסופית שיצאה לך במספרים"
+                        "✦ step 1: כדי לחשב את התרגיל, חלק את המספר הראשון במספר השני.",
+                        "*✦ step 2: בצע את החילוק: " + b + " ➗ " + a,
+                        "*✦ step 3: רשום את התוצאה הסופית."
+                );
+                break;
+            case LEVEL_TWO:
+                b = a * ((int) (Math.random() * Math.pow(4, difficulty)));
+                content = b + " ➗ " + a + " = ?";
+                solution = String.valueOf(b / a);
+
+                steps.add(new SolutionStep(1, "זהה את שני המספרים שיש לחלק.",
+                        "חלק את " + b + " ב-" + a));
+                steps.add(new SolutionStep(2, "בצע את פעולת החילוק.",
+                        b + " ➗ " + a + " = " + (b / a)));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית.",
+                        "התשובה היא: " + solution));
+
+                explanation = String.join("\n",
+                        "✦ step 1: חלק את המספר הגדול במספר הקטן.",
+                        "*✦ step 2: בצע את פעולת החילוק וקבל את התוצאה.",
+                        "*✦ step 3: רשום את התוצאה הסופית."
                 );
                 break;
             case LEVEL_THREE:
-            case LEVEL_FOUR:
-            default:
-                if (difficulty == LEVEL_THREE) {
-                    result = generateRandomNumber(difficulty);
-                }
-                if (difficulty == LEVEL_FOUR) {
-                    result = (int) (Math.random() * Math.pow(3, difficulty)) + 1;
-                }
-                if (difficulty > LEVEL_FOUR) {
-                    result = (int) (Math.random() * Math.pow(10, difficulty)) + 1;
-                }
-
+                result = generateRandomNumber(difficulty);
                 a = b * result;
                 content = "X ➗ " + b + " = " + result + " *✦ X = ?";
                 solution = String.valueOf(a);
+
+                steps.add(new SolutionStep(1, "בודד את X והעבר את האגפים.",
+                        "X = " + result + " ✱ " + b));
+                steps.add(new SolutionStep(2, "בצע את פעולת הכפל כדי לבודד את X.",
+                        "X = " + (result * b)));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית של X.",
+                        "X = " + solution));
+
                 explanation = String.join("\n",
-                        "✦ step 1: כדי לחשב את התרגיל הזה העבר את המספר מימין לאיקס אגף לצד ימין של המספרים  ",
-                        "*✦ step 2: החלף סימן מ / ל ✱, זה אמור להראות ככה : " + b + " ✱  " + result,
-                        "*✦ step 3: הכפל את המספרים, רשום את התשובה הסופית שיצאה לך במספרים"
+                        "✦ step 1: כדי לחשב את X, יש להעביר את המספר שמשמאל לאיקס לאגף השני.",
+                        "*✦ step 2: המרה של חילוק לכפל: X = " + result + " ✱ " + b,
+                        "*✦ step 3: בצע את פעולת הכפל וקבל את התוצאה."
+                );
+                break;
+
+            case LEVEL_FOUR:
+                result = (int) (Math.random() * Math.pow(3, difficulty)) + 1;
+                a = b * result;
+                content = "X ➗ " + b + " = " + result + " *✦ X = ?";
+                solution = String.valueOf(a);
+
+                steps.add(new SolutionStep(1, "בודד את X במשוואה.",
+                        "X = " + result + " ✱ " + b));
+                steps.add(new SolutionStep(2, "בצע את פעולת הכפל כדי לבודד את X.",
+                        "X = " + (result * b)));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית של X.",
+                        "X = " + solution));
+
+                explanation = String.join("\n",
+                        "✦ step 1: בידוד X בעזרת מעבר אגפים.",
+                        "*✦ step 2: המרה של חילוק לכפל: X = " + result + " ✱ " + b,
+                        "*✦ step 3: בצע את פעולת הכפל וקבל את התוצאה."
+                );
+                break;
+            case LEVEL_FIVE:
+            default:
+                result = (int) (Math.random() * Math.pow(10, difficulty)) + 1;
+                a = b * result;
+                content = "X ➗ " + b + " = " + result + " *✦ X = ?";
+                solution = String.valueOf(a);
+
+                steps.add(new SolutionStep(1, "בודד את X במשוואה.",
+                        "X = " + result + " ✱ " + b));
+                steps.add(new SolutionStep(2, "בצע את פעולת הכפל כדי לבודד את X.",
+                        "X = " + (result * b)));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית של X.",
+                        "X = " + solution));
+
+                explanation = String.join("\n",
+                        "✦ step 1: בידוד X בעזרת מעבר אגפים.",
+                        "*✦ step 2: המרה של חילוק לכפל: X = " + result + " ✱ " + b,
+                        "*✦ step 3: בצע את פעולת הכפל וקבל את התוצאה."
                 );
                 break;
         }
 
-        return new Question(DIV, content, difficulty, solution, explanation);
+        return new Question(DIV, content, difficulty, solution, explanation,steps);
     }
 
     private static Question generateWordProblem(int difficulty) {
         int a = generateRandomNumber(difficulty) + 1;
         int b = generateRandomNumber(difficulty) + 1;
         String boyName = hebrewBoysNames.get(random.nextInt(hebrewBoysNames.size()));
+        String girlName = hebrewGirlsNames.get(random.nextInt(hebrewGirlsNames.size()));
+        String fruitName = fruitNames.get(random.nextInt(fruitNames.size()));
+        String item1 = items1Names.get(random.nextInt(items1Names.size()));
+        String item2 = items2Names.get(random.nextInt(items2Names.size()));
+
         int result = 0;
         String content, solution, explanation;
+        List<SolutionStep> steps = new ArrayList<>();
+
 
         switch (difficulty) {
             case LEVEL_ONE:
-                String item1 = items1Names.get(random.nextInt(items1Names.size()));
-                String item2 = items2Names.get(random.nextInt(items2Names.size()));
-
                 result = a + b;
 
                 content = String.format("%s שם %d %s %s ולאחר מכן הוסיף עוד %d. * כמה %s יש ל%s עכשיו?", boyName, a, item2, item1, b, item2, boyName);
                 solution = String.valueOf(result);
+
+                steps.add(new SolutionStep(1, "זהה את המספרים שעליך לחבר.",
+                        "חבר את " + a + " ו-" + b));
+                steps.add(new SolutionStep(2, "בצע את פעולת החיבור.",
+                        a + " + " + b + " = " + result));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית.",
+                        "כמות ה" + item2 + " שיש ל-" + boyName + " עכשיו היא " + result));
+                steps.add(new SolutionStep(4, "תשובה סופית:", "תשובה: " + result));
+
                 explanation = String.join("\n",
                         "✦ step 1: כדי לחשב את התרגיל הזה, חבר את המספר הראשון עם המספר השני  ",
                         "*✦ step 2:  זה אמור להראות ככה : " + b + " +  " + a,
@@ -642,24 +924,75 @@ public class QuestionGenerator {
                 );
                 break;
             case LEVEL_TWO:
-            default:
-                String girlName = hebrewGirlsNames.get(random.nextInt(hebrewGirlsNames.size()));
-                String fruitName = fruitNames.get(random.nextInt(fruitNames.size()));
                 a += b;
                 result = a - b;
 
                 content = String.format("%s קנתה %d %s, אך נתנה %d ל%s. *כמה %s נשאר ל%s?", girlName, a, fruitName, b, boyName, fruitName,girlName);
                 solution = String.valueOf(result);
-                explanation = String.format("ת. %d פחות %d הם %d", a, b, result);
+
+                steps.add(new SolutionStep(1, "זהה את המספרים שעליך להפחית.",
+                        "החסר את " + b + " מתוך " + a));
+                steps.add(new SolutionStep(2, "בצע את פעולת החיסור.",
+                        a + " - " + b + " = " + result));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית.",
+                        "כמות ה" + fruitName + " שנותרה אצל " + girlName + " היא " + result));
+                steps.add(new SolutionStep(4, "תשובה סופית:", "תשובה: " + result));
+
                 explanation = String.join("\n",
                         "✦ step 1: כדי לחשב את התרגיל הזה, חסר את המספר השני מהמספר הראשון",
                         "*✦ step 2:  זה אמור להראות ככה : " + b + " -  " + a,
                         "*✦ step 3: רשום את התשובה הסופית שיצאה לך במספרים"
                 );
                 break;
+            case LEVEL_THREE:
+                String storeName = storeNames.get(random.nextInt(storeNames.size()));
+                String productName = productNames.get(random.nextInt(productNames.size()));
+
+                result = a * b;
+
+                content = String.format("%s הלך ל%s וקנה %d חבילות של %s. בכל חבילה יש %d %s. *כמה %s יש בסך הכל?",
+                        boyName, storeName, a, productName, b, productName, productName);
+                solution = String.valueOf(result);
+
+                steps.add(new SolutionStep(1, "זהה את המספרים שעליך להכפיל.",
+                        "הכפל את " + a + " ב-" + b));
+                steps.add(new SolutionStep(2, "בצע את פעולת הכפל.",
+                        a + " ✱ " + b + " = " + result));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית.",
+                        "בסך הכל יש " + productName, " -- > " + result));
+
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התוצאה, הכפל את מספר החבילות בכמות הפריטים בכל חבילה.",
+                        "*✦ step 2: בצע את פעולת הכפל: " + a + " ✱ " + b,
+                        "*✦ step 3: רשום את התוצאה הסופית."
+                );
+                break;
+            case LEVEL_FOUR:
+            default:
+                String drinkName = drinkNames.get(random.nextInt(drinkNames.size()));
+
+                a  = b * generateRandomNumber(difficulty);
+                result = a / b;
+                content = String.format("%s קנה %d בקבוקי %s ורוצה לחלק אותם שווה בשווה בין %d חברים. *כמה בקבוקים יקבל כל חבר?",
+                        girlName, a, drinkName, b);
+                solution = String.valueOf(result);
+
+                steps.add(new SolutionStep(1, "זהה את המספרים שעליך לחלק.",
+                        "חלק את " + a + " ב-" + b));
+                steps.add(new SolutionStep(2, "בצע את פעולת החילוק.",
+                        a + " ➗ " + b + " = " + result));
+                steps.add(new SolutionStep(3, "רשום את התוצאה הסופית.",
+                        "כל חבר יקבל " + result + " בקבוקי " + drinkName,"התשובה היא : " + result));
+
+                explanation = String.join("\n",
+                        "✦ step 1: כדי לחשב את התוצאה, חלק את מספר הבקבוקים במספר החברים.",
+                        "*✦ step 2: בצע את פעולת החילוק: " + a + " ➗ " + b,
+                        "*✦ step 3: רשום את התוצאה הסופית."
+                );
+                break;
         }
 
-        return new Question(WORD_PROBLEM, content, difficulty, solution, explanation);
+        return new Question(WORD_PROBLEM, content, difficulty, solution, explanation,steps);
     }
 
 
@@ -692,22 +1025,6 @@ public class QuestionGenerator {
         };
     }
 
-
-    public static void main(String[] args) {
-//        int count = 5;
-//        boolean isValid = true;
-//        while (isValid) {
-//            System.out.println(generateSubtractionQuestion(4));
-//            count--;
-//            if (count == 0) {
-//                isValid = false;
-//            }
-//        }
-        Question question = generateDerivativeQuestion(1);
-        System.out.println("Question: " + question.getContent());
-        System.out.println("Solution: " + question.getSolution());
-        System.out.println("Explanation: " + question.getExplanation());
-    }
 
 
 }

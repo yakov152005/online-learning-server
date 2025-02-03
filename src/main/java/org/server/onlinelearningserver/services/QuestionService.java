@@ -306,7 +306,6 @@ public class QuestionService {
         saveWeeklyStats(user, totalSuccessRate);
 
 
-
         DashboardDto dashboardDto = new DashboardDto(
                 successStreaks,
                 openQuestions,
