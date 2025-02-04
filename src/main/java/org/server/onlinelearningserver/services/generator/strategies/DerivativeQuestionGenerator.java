@@ -83,6 +83,7 @@ public class DerivativeQuestionGenerator implements QuestionGeneratorStrategy {
                 );
                 break;
             case LEVEL_FOUR:
+            default:
                 int coef = generateRandomNumber(difficulty);
                 content = "✦ מצא את הנגזרת של הפונקציה: "
                           + "*✦ f(x) = sin(" + coef + "x²)"
@@ -105,13 +106,14 @@ public class DerivativeQuestionGenerator implements QuestionGeneratorStrategy {
                         "*✦ step 3: הצב את הערכים כדי לקבל את הפונקציה הנגזרת."
                 );
                 break;
-            case LEVEL_FIVE:
-            default:
+                /*
+                 case LEVEL_FIVE:
+
                 content = "✦ מצא את הנגזרת של הפונקציה: "
                           + "*✦ f(x) = (" + a + "x² + " + b + "x + " + c + ") / (x + " + d + ")"
                           + "*✦ Please write the full equation: f'(x) = ?";
 
-                solution = "f'(x)=[(" + (2 * a) + "x+" + b + ")✱(x+ " + d +")-(" + a + "x²+" + b + "x+" + c + ")✱1]/(x+" + d + ")²";
+                solution = "f'(x)=[(" + (2 * a) + "x+" + b + ")*(x+ " + d +")-(" + a + "x^2+" + b + "x+" + c + ")*1]/(x+" + d + ")^2";
 
                 steps.add(new SolutionStep(1, "השתמש בכלל המנה: " + dishRule,
                         "d/dx [(" + a + "x² + " + b + "x + " + c + ") / (x + " + d + ")] = [(x + " + d + ") d/dx [" + a + "x² + " + b + "x + " + c + "] - (" + a + "x² + " + b + "x + " + c + ") d/dx [x + " + d + "]] / (x + " + d + ")²"));
@@ -128,7 +130,7 @@ public class DerivativeQuestionGenerator implements QuestionGeneratorStrategy {
                         "*✦ step 3: הצב בנוסחה וקבל את התוצאה."
                 );
                 break;
-
+                 */
         }
 
         return new Question(DERIVATIVE, content, difficulty, solution, explanation,steps);
