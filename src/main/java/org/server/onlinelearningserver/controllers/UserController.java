@@ -1,13 +1,18 @@
 package org.server.onlinelearningserver.controllers;
 
+import org.server.onlinelearningserver.dtos.UserDto;
 import org.server.onlinelearningserver.entitys.User;
 import org.server.onlinelearningserver.responses.BasicResponse;
 import org.server.onlinelearningserver.responses.LoginResponse;
 import org.server.onlinelearningserver.responses.UserCoinsResponse;
 import org.server.onlinelearningserver.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.server.onlinelearningserver.utils.Constants.UrlClient.URL_SERVER;
@@ -57,5 +62,20 @@ public class UserController {
     @PostMapping("/update-coins/{username}&={coinsCredits}")
     public BasicResponse updateCoins(@PathVariable String username, @PathVariable int coinsCredits){
         return userService.updateCoins(username,coinsCredits);
+    }
+
+    @GetMapping("/get-all-users")
+    public List<UserDto> getAllUsers(@RequestHeader("Authorization") String token, @RequestParam String username) {
+        return userService.getAllUsers(token,username);
+    }
+
+    @PostMapping("/send-message")
+    public BasicResponse sendMessageToUser(@RequestParam String username, @RequestParam String message) {
+        return userService.sendMessageToUser(username,message);
+    }
+
+    @PostMapping("/send-mail")
+    public BasicResponse sendMailToUser(@RequestParam String email, @RequestParam String message){
+        return userService.sendMailToUser(email,message);
     }
 }

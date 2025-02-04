@@ -1,5 +1,7 @@
 package org.server.onlinelearningserver.services;
 
+import org.server.onlinelearningserver.controllers.StreamController;
+import org.server.onlinelearningserver.dtos.UserDto;
 import org.server.onlinelearningserver.entitys.Session;
 import org.server.onlinelearningserver.entitys.User;
 import org.server.onlinelearningserver.repositoris.SessionRepository;
@@ -9,20 +11,22 @@ import org.server.onlinelearningserver.responses.LoginResponse;
 import org.server.onlinelearningserver.responses.UserCoinsResponse;
 import org.server.onlinelearningserver.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.server.onlinelearningserver.services.HelpMethods.checkPassword;
 import static org.server.onlinelearningserver.utils.ApiEmailProcessor.sendEmail;
 import static org.server.onlinelearningserver.utils.Constants.Errors.ERROR_PASSWORD;
+import static org.server.onlinelearningserver.utils.Constants.Mail.TITLE;
 import static org.server.onlinelearningserver.utils.Constants.UrlClient.URL_CLIENT_PC;
 import static org.server.onlinelearningserver.utils.GeneratorUtils.*;
 import static org.server.onlinelearningserver.services.HelpMethods.checkAllFiled;
@@ -31,11 +35,14 @@ import static org.server.onlinelearningserver.services.HelpMethods.checkAllFiled
 public class UserService {
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
+    private final StreamController streamController;
+
 
     @Autowired
-    public UserService(UserRepository userRepository, SessionRepository sessionRepository) {
+    public UserService(UserRepository userRepository, SessionRepository sessionRepository, StreamController streamController) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
+        this.streamController = streamController;
     }
 
     public BasicResponse addUser(@RequestBody User user) {
@@ -223,6 +230,62 @@ public class UserService {
         userRepository.save(user);
         return new BasicResponse(true,"Update Coins Successfully");
     }
+
+    public List<UserDto> getAllUsers(String token, String username) {
+        User requestingUser = userRepository.findByUsername(username);
+
+        if (token == null || requestingUser == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized");
+        }
+
+        if (!requestingUser.getUsername().equalsIgnoreCase("admin")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admins can view all users.");
+        }
+
+        String cleanToken = token.replace("Bearer ", "");
+        boolean isValid = JwtUtils.isTokenValid(cleanToken);
+        String findUsernameByToken = "";
+
+        if (isValid) {
+            findUsernameByToken = JwtUtils.extractUsername(cleanToken);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token, please login again");
+        }
+
+        User findUserByToken = userRepository.findByUsername(findUsernameByToken);
+
+        if (!findUserByToken.equals(requestingUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Token does not match user, please login again");
+        }
+
+        return userRepository.findAll().stream()
+                .map(user -> new UserDto(user.getUsername(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+
+    public BasicResponse sendMessageToUser(@RequestParam String username, @RequestParam String message) {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            return new BasicResponse(false,"User is not connected.");
+        }
+
+        streamController.notifyUser(username, message);
+        return new BasicResponse(true,"Message sent to " + username);
+    }
+
+    public BasicResponse sendMailToUser(@RequestParam String email, @RequestParam String message){
+        User user = userRepository.findUserByEmail(email);
+
+        if (user == null){
+            return new BasicResponse(false,"User not found.");
+        }
+
+        sendEmail(email,TITLE,message);
+        return new BasicResponse(true,"Sens mail successfully.");
+    }
+
 
 
 }

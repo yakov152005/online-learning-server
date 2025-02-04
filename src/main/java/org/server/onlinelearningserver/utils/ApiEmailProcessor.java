@@ -1,11 +1,17 @@
 package org.server.onlinelearningserver.utils;
-import java.io.UnsupportedEncodingException;
+
+import org.springframework.core.io.ClassPathResource;
+
+
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
 
 import static org.server.onlinelearningserver.utils.Constants.Mail.*;
-
 
 public class ApiEmailProcessor {
     public static boolean sendEmail(String recipient, String subject, String content) {
@@ -29,24 +35,44 @@ public class ApiEmailProcessor {
         });
 
         try {
+
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(SENDER_EMAIL,PERSONAL));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
             message.setSubject(subject);
-            //message.setText(content);
+
+            MimeBodyPart textPart = new MimeBodyPart();
             String htmlContent = "<html><body>"
                                  + "<h3>" + subject + "</h3>"
                                  + "<p>" + content.replace("\n", "<br>") + "</p>"
                                  + "</body></html>";
+            textPart.setContent(htmlContent, "text/html; charset=UTF-8");
 
-            message.setContent(htmlContent, "text/html; charset=UTF-8");
+            MimeBodyPart imagePart = new MimeBodyPart();
+
+            ClassPathResource resource = new ClassPathResource("OnlineLearningLogo.webp");
+
+            try (InputStream inputStream = resource.getInputStream()) {
+                Path tempFile = Files.createTempFile("OnlineLearningLogo", ".webp");
+                Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                imagePart.attachFile(tempFile.toFile());
+            }
+            imagePart.setContentID("<profileImage>");
+            imagePart.setDisposition(MimeBodyPart.INLINE);
+
+            MimeMultipart multipart = new MimeMultipart();
+            multipart.addBodyPart(textPart);
+            multipart.addBodyPart(imagePart);
+
+            message.setContent(multipart);
+
             Transport.send(message);
             System.out.println("Email sent successfully to " + recipient);
             return true;
         } catch (MessagingException e) {
             System.out.println("Error sending email: " + e.getMessage());
             return false;
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -37,4 +37,10 @@ public class QuestionController {
        return questionService.getDashboard(token,username);
     }
 
+    @GetMapping("/get-dashboard-admin")
+    public DashboardResponse getDashboardAdmin(@RequestHeader("Authorization") String token, @RequestParam String username, @RequestParam(required = false) String targetUsername) {
+        return questionService.getDashboardAdmin(token, username, targetUsername);
+    }
+
+
 }
