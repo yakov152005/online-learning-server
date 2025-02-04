@@ -1,5 +1,6 @@
 package org.server.onlinelearningserver.services;
 
+import org.server.onlinelearningserver.controllers.StreamController;
 import org.server.onlinelearningserver.dtos.*;
 import org.server.onlinelearningserver.entitys.*;
 import org.server.onlinelearningserver.repositoris.*;
@@ -26,11 +27,13 @@ public class QuestionService {
     private final UserRepository userRepository;
     private final QuestionRepository questionRepository;
     private final WeeklyStatsRepository weeklyStatsRepository;
+    private final StreamController streamController;
 
     @Autowired
     public QuestionService(QuestionHistoryRepository questionHistoryRepository, ProgressRepository progressRepository
                            , QuestionGenerator questionGenerator, UserRepository userRepository,
-                           QuestionRepository questionRepository,WeeklyStatsRepository weeklyStatsRepository
+                           QuestionRepository questionRepository,WeeklyStatsRepository weeklyStatsRepository,
+                           StreamController streamController
     ){
         this.questionHistoryRepository = questionHistoryRepository;
         this.progressRepository = progressRepository;
@@ -38,6 +41,7 @@ public class QuestionService {
         this.userRepository = userRepository;
         this.questionRepository = questionRepository;
         this.weeklyStatsRepository = weeklyStatsRepository;
+        this.streamController = streamController;
     }
 
 
@@ -166,7 +170,7 @@ public class QuestionService {
             }
         } else {
             successStreak = RESET_AFTER_ERROR_ANSWER;
-            
+
 
             Map<String, Integer> weakPoints = progress.getWeakPoints();
             weakPoints.put(activeCategory, weakPoints.getOrDefault(activeCategory, 0) + 1);
@@ -174,6 +178,12 @@ public class QuestionService {
 
 
             int weaknessPoint = progress.getWeakPoints().get(activeCategory);
+
+            if (weaknessPoint == 5) {
+                streamController.notifyUser(user.getUsername(),
+                        " ⚠️ אתה מתקשה בנושא: " + activeCategory + ", מומלץ לתרגל יותר! ⚠️");
+            }
+
             if (weaknessPoint > ERROR_HIGH_THEN_FIVE) {
                 double weaknessFactor = progress.getWeakPoints().getOrDefault(activeCategory, 0) / 10.0;
                 if (Math.random() < weaknessFactor) {

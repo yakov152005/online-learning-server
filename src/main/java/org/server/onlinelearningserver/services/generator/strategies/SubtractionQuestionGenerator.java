@@ -28,7 +28,7 @@ public class SubtractionQuestionGenerator implements QuestionGeneratorStrategy {
 
                 steps.add(new SolutionStep(1, "חסר את המספר השני מהמספר הראשון", a + " - " + b));
                 steps.add(new SolutionStep(2, "חשב את התוצאה", a + " - " + b + " = " + solution));
-                steps.add(new SolutionStep(3, "רשום את התשובה הסופית", "תוצאה: " + solution));
+                steps.add(new SolutionStep(3, "רשום את התשובה הסופית", "תוצאה: "," " + solution));
 
                 explanation = String.join("\n",
                         "✦ step 1: בשלב זה אתה מחסר את המספר השני מהמספר הראשון כדי למצוא את הסכום. ",

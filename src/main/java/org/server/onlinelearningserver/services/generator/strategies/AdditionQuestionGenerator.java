@@ -28,7 +28,7 @@ public class AdditionQuestionGenerator implements QuestionGeneratorStrategy {
                 content = a + " ➕ " + b + " = ?";
                 solution = calculateResult(a, b, "+");
 
-                steps.add(new SolutionStep(1, "זהה את שני המספרים שעליך לחבר", a + " ו- " + b));
+                steps.add(new SolutionStep(1, "זהה את שני המספרים שעליך לחבר", a + " + " + b));
                 steps.add(new SolutionStep(2, "בצע את פעולת החיבור", a + " + " + b + " = " + solution));
                 steps.add(new SolutionStep(3, "רשום את התוצאה הסופית", "התשובה: " + solution));
 
