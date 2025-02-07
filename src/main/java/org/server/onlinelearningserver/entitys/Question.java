@@ -39,13 +39,6 @@ public class Question {
     @Transient
     private List<SolutionStep> steps;
 
-
-    /*
-    @ManyToOne
-    @JoinColumn(name = "subtopic_id", nullable = false)
-    private Subtopic subtopic;
-    */
-
     public Question(String category, String content, int difficulty, String solution, String explanation) {
         this.category = category;
         this.content = content;

@@ -243,71 +243,16 @@ public class QuestionService {
                 .toList();
     }
 
-    public DashboardResponse getDashboard(String token,String username) {
+    public DashboardResponse getDashboard(String username) {
         User user = userRepository.findByUsername(username);
 
-        if (token == null){
-            return new DashboardResponse(false,"token is missing");
-        }
         if (user == null){
             return new DashboardResponse(false,"User not found.");
-        }
-
-        String cleanToken = token.replace("Bearer ", "");
-        boolean isValid = JwtUtils.isTokenValid(cleanToken);
-        String findUsernameByToken = "";
-
-        if (isValid){
-            findUsernameByToken = JwtUtils.extractUsername(cleanToken);
-        }else {
-            return new DashboardResponse(false,"User name not founded");
-        }
-
-        User findUserByToken = userRepository.findByUsername(findUsernameByToken);
-
-        if (user != findUserByToken){
-            return new DashboardResponse(false,"Token not match to this account please login again");
         }
 
         return buildDashboardResponse(user);
     }
 
-    public DashboardResponse getDashboardAdmin(String token, String username, String targetUsername) {
-        User requestingUser = userRepository.findByUsername(username);
-
-        if (token == null) {
-            return new DashboardResponse(false, "Token is missing");
-        }
-        if (requestingUser == null) {
-            return new DashboardResponse(false, "User not found.");
-        }
-
-        String cleanToken = token.replace("Bearer ", "");
-        boolean isValid = JwtUtils.isTokenValid(cleanToken);
-        String findUsernameByToken = "";
-
-        if (isValid) {
-            findUsernameByToken = JwtUtils.extractUsername(cleanToken);
-        } else {
-            return new DashboardResponse(false, "Invalid token, please login again");
-        }
-
-        User findUserByToken = userRepository.findByUsername(findUsernameByToken);
-
-        if (!findUserByToken.equals(requestingUser)) {
-            return new DashboardResponse(false, "Token does not match user, please login again");
-        }
-
-        if (requestingUser.getUsername().equalsIgnoreCase("admin") && targetUsername != null) {
-
-            User targetUser = userRepository.findByUsername(targetUsername);
-            if (targetUser == null) {
-                return new DashboardResponse(false, "Target user not found.");
-            }
-            return buildDashboardResponse(targetUser);
-        }
-        return buildDashboardResponse(requestingUser);
-    }
 
     private DashboardResponse buildDashboardResponse(User user){
         List<QuestionDto> openQuestions = getUnansweredQuestions(user);
